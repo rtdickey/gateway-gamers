@@ -1,7 +1,7 @@
 //create button story
 import React from "react";
-import { Meta, Story, StoryObj } from "@storybook/react";
-import Button, { ButtonProps } from "./Button";
+import { Meta, StoryObj } from "@storybook/react";
+import Button from "./Button";
 
 export default {
   title: "Components/Button",
