@@ -1,4 +1,6 @@
 import type { Preview } from "@storybook/react";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/js/bootstrap.js";
 
 const preview: Preview = {
   parameters: {
