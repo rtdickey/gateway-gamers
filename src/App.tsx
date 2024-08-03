@@ -1,12 +1,7 @@
-import React from "react";
-import { Page } from "./stories/Page";
+import Button from "./components/Button/Button";
 
-function App() {
-  return (
-    <>
-      <Page />
-    </>
-  );
-}
+export const App = () => {
+  return <Button onClick={() => alert("Button Clicked!")}>Test Button</Button>;
+};
 
 export default App;

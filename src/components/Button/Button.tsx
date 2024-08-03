@@ -1,35 +1,30 @@
 //create Button component
 import React from "react";
+import {
+  Button as BootstrapButton,
+  ButtonProps as BootstrapButtonprops,
+} from "react-bootstrap";
 
-interface ButtonProps {
-  variant?:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "danger"
-    | "warning"
-    | "info"
-    | "light"
-    | "dark"
-    | "link";
-  size?: "sm" | "lg";
-  disabled?: boolean;
-  onClick?: () => void;
+interface ButtonProps extends BootstrapButtonprops {
   children: React.ReactNode;
+  onClick: () => void;
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = "primary",
-  size = "lg",
-  disabled = false,
-  onClick,
   children,
+  onClick,
+  ...props
 }: ButtonProps) => {
-  const classes = `btn btn-${variant} btn-${size}`;
+  const { variant = "primary", size = "lg", disabled = false } = props;
   return (
-    <button className={classes} onClick={onClick} disabled={disabled}>
+    <BootstrapButton
+      variant={variant}
+      size={size}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {children}
-    </button>
+    </BootstrapButton>
   );
 };
 
