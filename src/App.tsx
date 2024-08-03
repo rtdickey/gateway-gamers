@@ -1,8 +1,12 @@
 import React from "react";
+import { Page } from "./stories/Page";
 
 function App() {
-  const value = "Gamer Friends!";
-  return <div>Hello {value}</div>;
+  return (
+    <>
+      <Page />
+    </>
+  );
 }
 
 export default App;
