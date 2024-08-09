@@ -1,12 +1,11 @@
-import React from "react";
-import { Page } from "./stories/Page";
+import Button from "./components/Button/Button";
 
-function App() {
+export const App = () => {
   return (
-    <>
-      <Page />
-    </>
+    <Button variant="primary" onClick={() => alert("Button Clicked!")}>
+      Test Button
+    </Button>
   );
-}
+};
 
 export default App;
