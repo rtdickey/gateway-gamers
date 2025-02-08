@@ -1,3 +1,7 @@
+import Link from "next/link"
+import Image from "next/image"
+import GatewayGamersLogo from "./GatewayGamersLogo"
+
 interface NavbarProps {
   children: React.ReactNode
 }
@@ -21,15 +25,19 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
               </svg>
             </label>
           </div>
-          <div className='mx-2 flex-1 px-2'>Gateway Gamers</div>
+          <div className='mx-2 flex-1 px-2'>
+            <Link href='/'>
+              <GatewayGamersLogo className='w-14' />
+            </Link>
+          </div>
           <div className='hidden flex-none lg:block'>
             <ul className='menu menu-horizontal'>
               {/* Navbar menu content here */}
               <li>
-                <a>Game Keep</a>
+                <Link href='/gamekeep'>Game Keep</Link>
               </li>
               <li>
-                <a>About</a>
+                <Link href='/about'>About</Link>
               </li>
             </ul>
           </div>
@@ -41,11 +49,14 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
         <label htmlFor='my-drawer-3' aria-label='close sidebar' className='drawer-overlay'></label>
         <ul className='menu bg-base-200 min-h-full w-80 p-4'>
           {/* Sidebar content here */}
+          <Link href='/'>
+            <GatewayGamersLogo className='w-20 justify-self-center mb-4' />
+          </Link>
           <li>
-            <a>Sidebar Item 1</a>
+            <Link href='/gamekeep'>Game Keep</Link>
           </li>
           <li>
-            <a>Sidebar Item 2</a>
+            <Link href='/about'>About</Link>
           </li>
         </ul>
       </div>
