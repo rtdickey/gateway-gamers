@@ -9,6 +9,7 @@ export const games: Game[] = [
     age: "14+",
     thumbnail:
       "https://cf.geekdo-images.com/MHhQxXVjiaa6C-04nGiIWw__thumb/img/rgETRyeuYs_wiZ5y-9Zj5H8kyFo=/fit-in/200x150/filters:strip_icc()/pic6640638.jpg",
+    isLoaned: true,
   },
   {
     title: "Wingspan",
@@ -18,6 +19,7 @@ export const games: Game[] = [
     age: "10+",
     thumbnail:
       "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__thumb/img/VNToqgS2-pOGU6MuvIkMPKn_y-s=/fit-in/200x150/filters:strip_icc()/pic4458123.jpg",
+    isLoaned: true,
   },
   {
     title: "Everdell",
@@ -54,6 +56,7 @@ export const games: Game[] = [
     age: "14+",
     thumbnail:
       "https://cf.geekdo-images.com/7k_nOxpO9OGIjhLq2BUZdA__thumb/img/eQ69OEDdjYjfKg6q5Navee87skU=/fit-in/200x150/filters:strip_icc()/pic3163924.jpg",
+    isLoaned: false,
   },
   {
     title: "Root",
@@ -63,6 +66,7 @@ export const games: Game[] = [
     age: "10+",
     thumbnail:
       "https://cf.geekdo-images.com/JUAUWaVUzeBgzirhZNmHHw__thumb/img/ACovMZzGGIsBRyEQXFnsT8282NM=/fit-in/200x150/filters:strip_icc()/pic4254509.jpg",
+    isLoaned: false,
   },
   {
     title: "Azul",
@@ -72,5 +76,6 @@ export const games: Game[] = [
     age: "8+",
     thumbnail:
       "https://cf.geekdo-images.com/aPSHJO0d0XOpQR5X-wJonw__thumb/img/ccsXKrdGJw-YSClWwzVUwk5Nh9Y=/fit-in/200x150/filters:strip_icc()/pic6973671.png",
+    isLoaned: false,
   },
 ]

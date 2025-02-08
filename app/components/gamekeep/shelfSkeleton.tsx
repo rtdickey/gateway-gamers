@@ -1,5 +1,5 @@
 interface SkeletonShelfProps {
-  shelfType: "Owned" | "Want" | "Not Interested" | "All"
+  shelfType: "Owned" | "Want" | "Not Interested" | "All" | "Loaned"
 }
 
 const ShelfSkeleton: React.FC<SkeletonShelfProps> = ({ shelfType }) => {

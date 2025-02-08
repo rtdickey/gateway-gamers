@@ -10,7 +10,7 @@ import { Game } from "@/app/types/Game"
 import ShelfSkeleton from "./shelfSkeleton"
 
 const Shelf: React.FC = () => {
-  const [shelfType, setShelfType] = useState<"All" | "Owned" | "Want" | "Not Interested">("Owned")
+  const [shelfType, setShelfType] = useState<"All" | "Owned" | "Want" | "Not Interested" | "Loaned">("Owned")
   const [games, setGames] = useState<Game[]>([])
   const [isFetching, setIsFetching] = useState(true)
 
@@ -24,7 +24,7 @@ const Shelf: React.FC = () => {
     fetchGames()
   }, [shelfType])
 
-  const handleShelfSelect = (selectedShelf: "All" | "Owned" | "Want" | "Not Interested") => {
+  const handleShelfSelect = (selectedShelf: "All" | "Owned" | "Want" | "Not Interested" | "Loaned") => {
     setShelfType(selectedShelf)
   }
 
@@ -55,28 +55,48 @@ const Shelf: React.FC = () => {
             Not Interested
           </a>
         </li>
+        <li>
+          <a className={shelfType === "Want" ? "active" : ""} onClick={() => handleShelfSelect("Loaned")}>
+            Loaned
+          </a>
+        </li>
       </ul>
       <div className='flex-1'>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
           {isFetching
             ? [...Array(10)].map((_, index) => <ShelfSkeleton key={index} shelfType={shelfType} />)
             : games.map(game => (
-                <div key={game.title} className='card card-compact bg-base-100 shadow-xl'>
+                <div className='card card-compact bg-base-100 shadow-xl'>
                   <figure>
-                    <Image src={game.thumbnail} alt={game.title} width={200} height={150} className='h-36' />
+                    <Image src={game.thumbnail} alt={game.title} width={200} height={150} className='h-40 w-full' />
                   </figure>
                   <div className='card-body'>
                     <h2 className='card-title'>{game.title}</h2>
                     <p>Playing Time: {game.playingTime}m</p>
                     <p>Player Count: {game.playerCount}</p>
                     <p>Age: {game.age}</p>
-                    {shelfType === "All" && (
-                      <div className='card-actions justify-end'>
-                        <div className='badge badge-outline'>{game.shelf}</div>
-                      </div>
-                    )}
+                    <div className='card-actions justify-end'>
+                      {game.isLoaned && <div className='badge badge-outline'>Loaned</div>}
+                      {shelfType === "All" && <div className='badge badge-outline'>{game.shelf}</div>}
+                    </div>
                   </div>
                 </div>
+
+                // <div key={game.title} className='card card-compact bg-base-100 shadow-xl'>
+                //   <figure>
+                //     <Image src={game.thumbnail} alt={game.title} width={200} height={150} className='h-36' />
+                //   </figure>
+                //   <div className='card-body'>
+                //     <h2 className='card-title'>{game.title}</h2>
+                //     <p>Playing Time: {game.playingTime}m</p>
+                //     <p>Player Count: {game.playerCount}</p>
+                //     <p>Age: {game.age}</p>
+                //     <div className='card-actions justify-end'>
+                //       {game.isLoaned && <div className='badge badge-outline'>Loaned</div>}
+                //       {shelfType === "All" && <div className='badge badge-outline'>{game.shelf}</div>}
+                //     </div>
+                //   </div>
+                // </div>
               ))}
         </div>
       </div>
