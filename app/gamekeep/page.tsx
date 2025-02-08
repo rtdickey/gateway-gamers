@@ -1,3 +1,36 @@
+import Shelf from "@/app/components/gamekeep/shelf"
+
+const games = [
+  {
+    title: "Space Base",
+    status: "owned",
+    playingTime: 60,
+    playerCount: "2-5",
+    age: "14+",
+  },
+  {
+    title: "Wingspan",
+    status: "owned",
+    playingTime: 70,
+    playerCount: "1-5",
+    age: "10+",
+  },
+  {
+    title: "Everdell",
+    status: "owned",
+    playingTime: 80,
+    playerCount: "1-4",
+    age: "13+",
+  },
+  {
+    title: "Terraforming Mars",
+    status: "owned",
+    playingTime: 120,
+    playerCount: "1-5",
+    age: "12+",
+  },
+]
+
 const GameKeep = () => {
   return (
     <div>
@@ -6,12 +39,7 @@ const GameKeep = () => {
         GameKeep is a game library management system that allows users to keep track of their games, including the games
         they own, the games they want to buy, and the games they have played.
       </p>
-      <div className='flex w-52 flex-col gap-4'>
-        <div className='skeleton h-32 w-full'></div>
-        <div className='skeleton h-4 w-28'></div>
-        <div className='skeleton h-4 w-full'></div>
-        <div className='skeleton h-4 w-full'></div>
-      </div>
+      <Shelf games={games} />
     </div>
   )
 }
