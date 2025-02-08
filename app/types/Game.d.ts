@@ -4,4 +4,5 @@ export interface Game {
   playingTime: number
   playerCount: string
   age: string
+  thumbnail: string
 }
