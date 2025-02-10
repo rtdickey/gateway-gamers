@@ -73,8 +73,10 @@ export const gameData: Game[] = [
 
 export const loanedGameData: LoanedGame[] = [
   {
-    borrower: "Ryan Dickey",
+    borrower: "Paul Moon",
+    borrowerId: "3",
     owner: "Charles Reed",
+    ownerId: "2",
     loanedDate: "2025-01-01",
     game: {
       title: "Space Base",
@@ -89,7 +91,9 @@ export const loanedGameData: LoanedGame[] = [
   },
   {
     borrower: "Ryan Dickey",
+    borrowerId: "1",
     owner: "Charles Reed",
+    ownerId: "2",
     loanedDate: "2024-08-25",
     game: {
       title: "Gloomhaven",
@@ -103,7 +107,9 @@ export const loanedGameData: LoanedGame[] = [
   },
   {
     borrower: "Charles Reed",
+    borrowerId: "2",
     owner: "Ryan Dickey",
+    ownerId: "1",
     loanedDate: "2024-08-25",
     game: {
       title: "Azul",
