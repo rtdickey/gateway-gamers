@@ -37,6 +37,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                 <Link href='/gamekeep'>Game Keep</Link>
               </li>
               <li>
+                <Link href='/gamekeep/tracker'>Tracker</Link>
+              </li>
+              <li>
                 <Link href='/about'>About</Link>
               </li>
             </ul>
@@ -54,6 +57,9 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           </Link>
           <li>
             <Link href='/gamekeep'>Game Keep</Link>
+          </li>
+          <li>
+            <Link href='/gamekeep/tracker'>Tracker</Link>
           </li>
           <li>
             <Link href='/about'>About</Link>

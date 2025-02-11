@@ -3,7 +3,7 @@ import GatewayGamersLogo from "./GatewayGamersLogo"
 
 const Footer = () => {
   return (
-    <footer className='footer bg-neutral text-neutral-content items-center p-4'>
+    <footer className='footer bg-neutral text-neutral-content items-center p-4 mt-4'>
       <aside className='grid-flow-col items-center'>
         <GatewayGamersLogo className='w-12' />
         <p>Copyright © {new Date().getFullYear()} - All rights reserved</p>
