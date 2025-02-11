@@ -4,7 +4,7 @@ import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
 
-import { Game } from "@/app/lib/types/Game"
+import { UserGame } from "@/app/lib/types/Game"
 import { type Shelf as ShelfType } from "@/app/lib/types/Shelf"
 
 import { useSearchParams } from "next/navigation"
@@ -12,7 +12,7 @@ import Search from "./search"
 import { useEffect, useState } from "react"
 
 interface ShelfProps {
-  games: Game[]
+  games: UserGame[]
 }
 
 const Shelf: React.FC<ShelfProps> = ({ games }) => {

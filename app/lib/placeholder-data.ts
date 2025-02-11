@@ -1,8 +1,9 @@
-import { Game } from "@/app/lib/types/Game"
-import { LoanedGame } from "@/app/lib/types/LoanedGame"
+import { type UserGame } from "@/app/lib/types/Game"
+import { type LoanedGame } from "@/app/lib/types/LoanedGame"
 
-export const gameData: Game[] = [
+export const gameData: UserGame[] = [
   {
+    ownerId: "1",
     title: "Space Base",
     shelf: "Owned",
     playingTime: 60,
@@ -10,9 +11,11 @@ export const gameData: Game[] = [
     age: "14+",
     thumbnail:
       "https://cf.geekdo-images.com/MHhQxXVjiaa6C-04nGiIWw__thumb/img/rgETRyeuYs_wiZ5y-9Zj5H8kyFo=/fit-in/200x150/filters:strip_icc()/pic6640638.jpg",
-    isLoaned: true,
+    isPrivate: true,
+    isLoaned: false,
   },
   {
+    ownerId: "1",
     title: "Wingspan",
     shelf: "Owned",
     playingTime: 70,
@@ -20,9 +23,11 @@ export const gameData: Game[] = [
     age: "10+",
     thumbnail:
       "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__thumb/img/VNToqgS2-pOGU6MuvIkMPKn_y-s=/fit-in/200x150/filters:strip_icc()/pic4458123.jpg",
-    isLoaned: true,
+    isPrivate: true,
+    isLoaned: false,
   },
   {
+    ownerId: "1",
     title: "Everdell",
     shelf: "Not Interested",
     playingTime: 80,
@@ -30,8 +35,11 @@ export const gameData: Game[] = [
     age: "13+",
     thumbnail:
       "https://cf.geekdo-images.com/fjE7V5LNq31yVEW_yuqI-Q__thumb/img/Cf_mYxR_VvdjTEPXseSurni2JNI=/fit-in/200x150/filters:strip_icc()/pic3918905.png",
+    isPrivate: false,
+    isLoaned: false,
   },
   {
+    ownerId: "1",
     title: "Terraforming Mars",
     shelf: "Want",
     playingTime: 120,
@@ -39,8 +47,11 @@ export const gameData: Game[] = [
     age: "12+",
     thumbnail:
       "https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__thumb/img/BTxqxgYay5tHJfVoJ2NF5g43_gA=/fit-in/200x150/filters:strip_icc()/pic3536616.jpg",
+    isPrivate: false,
+    isLoaned: false,
   },
   {
+    ownerId: "1",
     title: "Gloomhaven",
     shelf: "Not Interested",
     playingTime: 120,
@@ -48,8 +59,11 @@ export const gameData: Game[] = [
     age: "12+",
     thumbnail:
       "https://cf.geekdo-images.com/sZYp_3BTDGjh2unaZfZmuA__thumb/img/veqFeP4d_3zNhFc3GNBkV95rBEQ=/fit-in/200x150/filters:strip_icc()/pic2437871.jpg",
+    isPrivate: false,
+    isLoaned: false,
   },
   {
+    ownerId: "1",
     title: "Scythe",
     shelf: "Owned",
     playingTime: 90,
@@ -57,9 +71,11 @@ export const gameData: Game[] = [
     age: "14+",
     thumbnail:
       "https://cf.geekdo-images.com/7k_nOxpO9OGIjhLq2BUZdA__thumb/img/eQ69OEDdjYjfKg6q5Navee87skU=/fit-in/200x150/filters:strip_icc()/pic3163924.jpg",
-    isLoaned: false,
+    isPrivate: false,
+    isLoaned: true,
   },
   {
+    ownerId: "1",
     title: "Root",
     shelf: "Owned",
     playingTime: 90,
@@ -67,58 +83,90 @@ export const gameData: Game[] = [
     age: "10+",
     thumbnail:
       "https://cf.geekdo-images.com/JUAUWaVUzeBgzirhZNmHHw__thumb/img/ACovMZzGGIsBRyEQXFnsT8282NM=/fit-in/200x150/filters:strip_icc()/pic4254509.jpg",
+    isPrivate: false,
     isLoaned: false,
+  },
+  {
+    ownerId: "1",
+    title: "Azul",
+    shelf: "Owned",
+    playingTime: 30,
+    playerCount: "2-4",
+    age: "8+",
+    thumbnail:
+      "https://cf.geekdo-images.com/aPSHJO0d0XOpQR5X-wJonw__thumb/img/ccsXKrdGJw-YSClWwzVUwk5Nh9Y=/fit-in/200x150/filters:strip_icc()/pic6973671.png",
+    isPrivate: true,
+    isLoaned: true,
   },
 ]
 
 export const loanedGameData: LoanedGame[] = [
   {
+    loanId: "1",
     borrower: "Paul Moon",
     borrowerId: "3",
     owner: "Charles Reed",
     ownerId: "2",
     loanedDate: "2025-01-01",
-    game: {
-      title: "Space Base",
-      shelf: "Owned",
-      playingTime: 60,
-      playerCount: "2-5",
-      age: "14+",
-      thumbnail:
-        "https://cf.geekdo-images.com/MHhQxXVjiaa6C-04nGiIWw__thumb/img/rgETRyeuYs_wiZ5y-9Zj5H8kyFo=/fit-in/200x150/filters:strip_icc()/pic6640638.jpg",
-      isLoaned: true,
-    },
+    title: "Space Base",
+    shelf: "Owned",
+    playingTime: 60,
+    playerCount: "2-5",
+    age: "14+",
+    thumbnail:
+      "https://cf.geekdo-images.com/MHhQxXVjiaa6C-04nGiIWw__thumb/img/rgETRyeuYs_wiZ5y-9Zj5H8kyFo=/fit-in/200x150/filters:strip_icc()/pic6640638.jpg",
+    isPrivate: false,
+    isLoaned: true,
   },
   {
+    loanId: "2",
     borrower: "Ryan Dickey",
     borrowerId: "1",
     owner: "Charles Reed",
     ownerId: "2",
     loanedDate: "2024-08-25",
-    game: {
-      title: "Gloomhaven",
-      shelf: "Not Interested",
-      playingTime: 120,
-      playerCount: "1-4",
-      age: "12+",
-      thumbnail:
-        "https://cf.geekdo-images.com/sZYp_3BTDGjh2unaZfZmuA__thumb/img/veqFeP4d_3zNhFc3GNBkV95rBEQ=/fit-in/200x150/filters:strip_icc()/pic2437871.jpg",
-    },
+    title: "Gloomhaven",
+    shelf: "Not Interested",
+    playingTime: 120,
+    playerCount: "1-4",
+    age: "12+",
+    thumbnail:
+      "https://cf.geekdo-images.com/sZYp_3BTDGjh2unaZfZmuA__thumb/img/veqFeP4d_3zNhFc3GNBkV95rBEQ=/fit-in/200x150/filters:strip_icc()/pic2437871.jpg",
+    isPrivate: false,
+    isLoaned: true,
   },
   {
+    loanId: "3",
     borrower: "Charles Reed",
     borrowerId: "2",
     owner: "Ryan Dickey",
     ownerId: "1",
-    loanedDate: "2024-08-25",
-    game: {
-      title: "Azul",
-      shelf: null,
-      playingTime: 30,
-      playerCount: "2-4",
-      age: "8+",
-      thumbnail:
-        "https://cf.geekdo-images.com/aPSHJO0d0XOpQR5X-wJonw__thumb/img/ccsXKrdGJw-YSClWwzVUwk5Nh9Y=/fit-in/200x150/filters:strip_icc()/pic6973671.png",
-    },
+    loanedDate: "2024-12-13",
+    title: "Azul",
+    shelf: null,
+    playingTime: 30,
+    playerCount: "2-4",
+    age: "8+",
+    thumbnail:
+      "https://cf.geekdo-images.com/aPSHJO0d0XOpQR5X-wJonw__thumb/img/ccsXKrdGJw-YSClWwzVUwk5Nh9Y=/fit-in/200x150/filters:strip_icc()/pic6973671.png",
+    isPrivate: false,
+    isLoaned: true,
+  },
+  {
+    loanId: "4",
+    borrower: "Paul Moon",
+    borrowerId: "3",
+    owner: "Ryan Dickey",
+    ownerId: "1",
+    loanedDate: "2025-01-29",
+    title: "Scythe",
+    shelf: "Want",
+    playingTime: 90,
+    playerCount: "1-5",
+    age: "14+",
+    thumbnail:
+      "https://cf.geekdo-images.com/7k_nOxpO9OGIjhLq2BUZdA__thumb/img/eQ69OEDdjYjfKg6q5Navee87skU=/fit-in/200x150/filters:strip_icc()/pic3163924.jpg",
+    isPrivate: false,
+    isLoaned: true,
   },
 ]

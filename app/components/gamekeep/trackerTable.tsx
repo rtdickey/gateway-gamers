@@ -1,6 +1,9 @@
+"use client"
+
 import Image from "next/image"
 
 import { LoanedGame } from "@/app/lib/types/LoanedGame"
+import { useCallback, useRef, useState } from "react"
 
 interface TrackerTableProps {
   loanedGames: LoanedGame[]
@@ -15,38 +18,49 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
     return daysDifference
   }
 
+  const [selectedLoanedGame, setSelectedLoanedGame] = useState<LoanedGame | null>(null)
+  const ref = useRef<HTMLDialogElement>(null)
+
+  const handleShowModal = useCallback(
+    (loanedGame: LoanedGame) => {
+      setSelectedLoanedGame(loanedGame)
+      ref.current?.showModal()
+    },
+    [ref, setSelectedLoanedGame],
+  )
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedLoanedGame(null)
+    ref.current?.close()
+  }, [ref, setSelectedLoanedGame])
+
+  const handleReturnGame = useCallback(() => {
+    console.log("Game Returned: ", selectedLoanedGame?.title, selectedLoanedGame?.borrower, selectedLoanedGame?.loanId)
+    handleCloseModal()
+  }, [handleCloseModal, selectedLoanedGame])
+
   return (
     <div className='overflow-x-auto'>
-      <table className='table'>
+      <table className='table table-xs sm:table-sm'>
         {/* head */}
         <thead>
           <tr>
-            <th>
-              {/* <label>
-                <input type='checkbox' className='checkbox' />
-              </label> */}
-            </th>
-            <th>Name</th>
-            <th>Date Given</th>
-            <th>Total Days</th>
+            <th>Game</th>
+            <th>Borrower</th>
+            <th>Date</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {loanedGames.map(loanedGame => (
-            <tr key={loanedGame.borrowerId + "-" + loanedGame.game.title}>
-              <th>
-                <label>
-                  <input type='checkbox' className='checkbox' />
-                </label>
-              </th>
+            <tr key={loanedGame.borrowerId + "-" + loanedGame.title}>
               <td>
                 <div className='flex items-center gap-3'>
-                  <div className='avatar'>
+                  <div className='avatar hidden sm:block'>
                     <div className='mask mask-squircle h-12 w-12'>
                       <Image
-                        src={loanedGame.game.thumbnail}
-                        alt={loanedGame.game.title}
+                        src={loanedGame.thumbnail}
+                        alt={loanedGame.title}
                         width={200}
                         height={150}
                         className='w-full'
@@ -54,19 +68,55 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
                     </div>
                   </div>
                   <div>
-                    <div className='font-bold'>{loanedGame.borrower}</div>
+                    <div className='font-bold'>{loanedGame.title}</div>
                   </div>
                 </div>
               </td>
-              <td>{loanedGame.loanedDate}</td>
-              <td>{daysSinceLoan(loanedGame.loanedDate)} days</td>
+              <td>{loanedGame.borrower}</td>
               <td>
-                <button className='btn btn-ghost btn-xs'>details</button>
+                <div>{loanedGame.loanedDate}</div>
+                <div>({daysSinceLoan(loanedGame.loanedDate)} days)</div>
+              </td>
+              <td></td>
+              <td>
+                <button className='btn btn-link' onClick={() => handleShowModal(loanedGame)}>
+                  Returned?
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <dialog ref={ref} id='loaned_game_modal' className='modal modal-bottom sm:modal-middle'>
+        <div className='modal-box'>
+          <h3 className='font-bold text-lg'>
+            {selectedLoanedGame ? (
+              <span>It's been {daysSinceLoan(selectedLoanedGame.loanedDate)} days since you loaned this game.</span>
+            ) : (
+              <span>Uh Oh!</span>
+            )}
+          </h3>
+          <p className='py-4'>
+            {selectedLoanedGame ? (
+              <span>
+                Has {selectedLoanedGame?.borrower} returned {selectedLoanedGame?.title}?
+              </span>
+            ) : (
+              <span>No loaned game information found...</span>
+            )}
+          </p>
+          <div className='modal-action'>
+            {selectedLoanedGame && (
+              <button className='btn btn-primary' onClick={handleReturnGame}>
+                Yes, it's back in my collection
+              </button>
+            )}
+            <button className='btn' onClick={handleCloseModal}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
   )
 }
