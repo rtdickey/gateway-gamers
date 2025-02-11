@@ -50,8 +50,9 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
               <p>Player Count: {game.playerCount}</p>
               <p>Age: {game.age}</p>
               <div className='card-actions justify-end'>
-                {game.isLoaned && <div className='badge badge-outline'>Loaned</div>}
-                {shelf === "All" && <div className='badge badge-outline'>{game.shelf}</div>}
+                {game.isPrivate && <div className='badge badge-accent badge-sm'>Private</div>}
+                {game.isLoaned && <div className='badge badge-secondary badge-sm'>Loaned</div>}
+                {shelf === "All" && <div className='badge badge-sm font-bold'>{game.shelf}</div>}
               </div>
             </div>
           </div>
