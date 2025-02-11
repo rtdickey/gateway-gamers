@@ -6,10 +6,10 @@ const Page = async () => {
   const loanedGames = await getLoanedGames("1")
 
   return (
-    <div>
+    <>
       <h1 className='text-2xl font-semibold'>Track Your Games</h1>
       <TrackerTable loanedGames={loanedGames} />
-    </div>
+    </>
   )
 }
 
