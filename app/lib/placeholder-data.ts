@@ -103,9 +103,9 @@ export const gameData: UserGame[] = [
 export const loanedGameData: LoanedGame[] = [
   {
     loanId: "1",
-    borrower: "Paul Moon",
+    borrower: "Antonio Goodman",
     borrowerId: "3",
-    owner: "Charles Reed",
+    owner: "Krishan Duran",
     ownerId: "2",
     loanedDate: "2025-01-01",
     title: "Space Base",
@@ -120,9 +120,9 @@ export const loanedGameData: LoanedGame[] = [
   },
   {
     loanId: "2",
-    borrower: "Ryan Dickey",
+    borrower: "Caitlin Weaver",
     borrowerId: "1",
-    owner: "Charles Reed",
+    owner: "Krishan Duran",
     ownerId: "2",
     loanedDate: "2024-08-25",
     title: "Gloomhaven",
@@ -137,9 +137,9 @@ export const loanedGameData: LoanedGame[] = [
   },
   {
     loanId: "3",
-    borrower: "Charles Reed",
+    borrower: "Krishan Duran",
     borrowerId: "2",
-    owner: "Ryan Dickey",
+    owner: "Caitlin Weaver",
     ownerId: "1",
     loanedDate: "2024-12-13",
     title: "Azul",
@@ -154,9 +154,9 @@ export const loanedGameData: LoanedGame[] = [
   },
   {
     loanId: "4",
-    borrower: "Paul Moon",
+    borrower: "Antonio Goodman",
     borrowerId: "3",
-    owner: "Ryan Dickey",
+    owner: "Caitlin Weaver",
     ownerId: "1",
     loanedDate: "2025-01-29",
     title: "Scythe",

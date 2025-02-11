@@ -91,7 +91,9 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
         <div className='modal-box'>
           <h3 className='font-bold text-lg'>
             {selectedLoanedGame ? (
-              <span>It's been {daysSinceLoan(selectedLoanedGame.loanedDate)} days since you loaned this game.</span>
+              <span>
+                It&apos;s been {daysSinceLoan(selectedLoanedGame.loanedDate)} days since you loaned this game.
+              </span>
             ) : (
               <span>Uh Oh!</span>
             )}
@@ -108,7 +110,7 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
           <div className='modal-action'>
             {selectedLoanedGame && (
               <button className='btn btn-primary' onClick={handleReturnGame}>
-                Yes, it's back in my collection
+                Yes, it&apos;s back in my collection
               </button>
             )}
             <button className='btn' onClick={handleCloseModal}>

@@ -5,9 +5,7 @@ import Image from "next/image"
 import { useDebounce } from "use-debounce"
 
 import { UserGame } from "@/app/lib/types/Game"
-import { type Shelf as ShelfType } from "@/app/lib/types/Shelf"
 
-import { useSearchParams } from "next/navigation"
 import Search from "./search"
 import { useEffect, useState } from "react"
 
@@ -16,8 +14,6 @@ interface ShelfProps {
 }
 
 const Shelf: React.FC<ShelfProps> = ({ games }) => {
-  const params = useSearchParams()
-
   const [filteredGames, setFilteredGames] = useState(games)
   const [searchValue, setSearchValue] = useState("")
   const [debouncedSearch] = useDebounce(searchValue.toLowerCase(), 500)
@@ -42,7 +38,16 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
       )
     })
     setFilteredGames(filterGames.sort((a, b) => a.title.localeCompare(b.title)))
-  }, [filterOwned, filterWant, filterNotInterested, filterPrivate, filterLoaned, debouncedSearch, setFilteredGames])
+  }, [
+    filterOwned,
+    filterWant,
+    filterNotInterested,
+    filterPrivate,
+    filterLoaned,
+    debouncedSearch,
+    setFilteredGames,
+    games,
+  ])
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value)
