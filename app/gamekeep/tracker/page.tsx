@@ -7,7 +7,6 @@ const Page = async () => {
 
   return (
     <>
-      <h1 className='text-2xl font-semibold'>Track Your Games</h1>
       <TrackerTable loanedGames={loanedGames} />
     </>
   )
