@@ -7,18 +7,23 @@ import { Game } from "../lib/types/Game"
 export interface PaginationProps {
   page?: number
   size?: number
+  searchTitle?: string
 }
 
-export async function getGames({ page = 0, size = 100 }: PaginationProps) {
+export async function getGames({ page = 0, size = 100, searchTitle }: PaginationProps) {
   const supabase = await createClient()
   const startIndex = page * size
   const endIndex = startIndex + size - 1
-  const { data: games, error } = await supabase
-    .from("games")
-    .select("*")
-    .order("title", { ascending: true })
-    .range(startIndex, endIndex)
-    .returns<Game[]>()
+
+  let gamesQuery = supabase.from("games").select("*")
+
+  if (searchTitle) {
+    gamesQuery = gamesQuery.ilike("title", `%${searchTitle}%`)
+  }
+
+  gamesQuery = gamesQuery.order("title", { ascending: true }).range(startIndex, endIndex)
+
+  const { data: games, error } = await gamesQuery.returns<Game[]>()
 
   if (error) {
     redirect("/error")

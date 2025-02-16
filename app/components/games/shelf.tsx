@@ -7,20 +7,22 @@ import { useDebounce } from "use-debounce"
 
 import Search from "@/app/components/common/search"
 import { Game } from "@/app/lib/types/Game"
+import { getGames } from "@/app/games/actions"
 
-interface ShelfProps {
-  games: Game[]
-}
-
-const Shelf: React.FC<ShelfProps> = ({ games }) => {
-  const [filteredGames, setFilteredGames] = useState(games)
+const Shelf: React.FC = () => {
+  const [filteredGames, setFilteredGames] = useState<Game[]>([])
   const [searchValue, setSearchValue] = useState("")
   const [debouncedSearch] = useDebounce(searchValue.toLowerCase(), 500)
 
   useEffect(() => {
-    const filterGames = games.filter(game => game.title.toLowerCase().includes(debouncedSearch))
-    setFilteredGames(filterGames.sort((a, b) => a.title.localeCompare(b.title)))
-  }, [debouncedSearch, setFilteredGames, games])
+    const fetchData = async () => {
+      const { totalGames, totalPages, games } = await getGames({ page: 0, size: 100, searchTitle: debouncedSearch })
+      const filterGames = games.filter(game => game.title.toLowerCase().includes(debouncedSearch))
+      setFilteredGames(filterGames.sort((a, b) => a.title.localeCompare(b.title)))
+    }
+
+    fetchData()
+  }, [debouncedSearch, setFilteredGames])
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value)
@@ -28,10 +30,14 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
 
   return (
     <>
+      <div>Total Games Displayed: {filteredGames.length}</div>
       <Search onChange={handleOnChange} />
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4'>
         {filteredGames.map(game => (
-          <div key={game.id} className='card card-compact bg-base-100 shadow-xl'>
+          <div
+            key={game.id}
+            className='card card-compact bg-base-100 shadow-xl hover:shadow-cyan-500/50 hover:ring-2 hover:bg-base-300 hover:cursor-pointer'
+          >
             <figure>
               {game.thumbnail && (
                 <Image src={game.thumbnail} alt={game.title} width={200} height={150} className='h-40 w-full' />
