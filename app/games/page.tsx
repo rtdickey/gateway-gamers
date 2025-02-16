@@ -1,4 +1,8 @@
-const Games = () => {
+import getUser from "../actions"
+
+const Games = async () => {
+  const { user } = await getUser()
+
   return (
     <div>
       <div className='container mx-auto px-6 min-h-screen justify-between mt-4'>Games</div>
