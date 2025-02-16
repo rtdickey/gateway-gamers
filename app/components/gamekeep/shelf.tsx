@@ -1,13 +1,12 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
 
-import { UserGame } from "@/app/lib/types/Game"
-
-import Search from "./search"
-import { useEffect, useState } from "react"
+import { UserGame } from "@/app/lib/types/UserGame"
+import Search from "@/app/components/common/search"
 
 interface ShelfProps {
   games: UserGame[]

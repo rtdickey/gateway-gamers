@@ -1,13 +1,14 @@
 import getUser from "../actions"
+import Shelf from "../components/games/shelf"
+import { getGames, PaginationProps } from "./actions"
 
 const Games = async () => {
   const { user } = await getUser()
 
-  return (
-    <div>
-      <div className='container mx-auto px-6 min-h-screen justify-between mt-4'>Games</div>
-    </div>
-  )
+  const pagination: PaginationProps = { page: 0, size: 100 }
+  const { totalGames, totalPages, games } = await getGames(pagination)
+
+  return <Shelf games={games} />
 }
 
 export default Games

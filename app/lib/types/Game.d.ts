@@ -1,11 +1,13 @@
-export interface UserGame {
-  ownerId: string
+export interface Game {
+  id: string
   title: string
-  shelf: "Owned" | "Want" | "Not Interested" | "Loaned" | null
+  year_published: number
+  isExpansion: boolean
   playingTime: number
   playerCount: string
   age: string
+  publisher: string
   thumbnail: string
-  isPrivate: boolean
-  isLoaned: boolean
+  image: string
+  bggId: number
 }

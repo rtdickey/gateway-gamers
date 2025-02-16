@@ -1,4 +1,4 @@
-import { type UserGame } from "./Game"
+import { type UserGame } from "./UserGame"
 
 export interface LoanedGame extends UserGame {
   loanId: string
