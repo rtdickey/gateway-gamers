@@ -1,17 +1,15 @@
 import getUser from "../actions"
 import BackToTop from "../components/common/top_button"
-import Shelf from "../components/games/shelf"
-import { getGames, PaginationProps } from "./actions"
+import Catalog from "../components/games/catalog"
+import { getGames } from "./actions"
 
 const Games = async () => {
+  const pageCount = 100
   const { user } = await getUser()
-
-  const pagination: PaginationProps = { page: 0, size: 100 }
-  const { totalGames, totalPages, games } = await getGames(pagination)
-
+  const { games } = await getGames({ page: 0, size: pageCount })
   return (
     <>
-      <Shelf />
+      <Catalog initialGames={games} pageCount={pageCount} />
       <BackToTop />
     </>
   )

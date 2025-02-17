@@ -4,13 +4,13 @@ import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
 import { Game } from "../lib/types/Game"
 
-export interface PaginationProps {
+export interface GetGamesProps {
   page?: number
   size?: number
   searchTitle?: string
 }
 
-export async function getGames({ page = 0, size = 100, searchTitle }: PaginationProps) {
+export async function getGames({ page = 0, size = 100, searchTitle }: GetGamesProps) {
   const supabase = await createClient()
   const startIndex = page * size
   const endIndex = startIndex + size - 1
