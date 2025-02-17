@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
@@ -16,10 +16,8 @@ interface CatalogProps {
 
 const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
   const [loadedGames, setLoadedGames] = useState<Game[]>(initialGames)
-  const [filteredGames, setFilteredGames] = useState<Game[]>([])
   const [searchValue, setSearchValue] = useState("")
   const [debouncedSearch] = useDebounce(searchValue.toLowerCase(), 500)
-
   const [isLast, setIsLast] = useState(false)
   const [offset, setOffset] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
@@ -28,12 +26,12 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     setSearchValue(e.target.value)
   }
 
-  const loadMoreGames = async (offset: number) => {
+  const loadMoreGames = async (offset: number, searchTitle?: string) => {
     setIsLoading(true)
     // Every time we fetch, we want to increase
     // the offset to load fresh tickets
     setOffset(prev => prev + 1)
-    const newGames = await fetchGames(offset)
+    const newGames = await fetchGames(offset, searchTitle ?? "")
 
     if (newGames && newGames.length < pageCount) {
       setIsLast(true)
@@ -48,7 +46,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     setIsLoading(false)
   }
 
-  const fetchGames = async (offset: number, searchTitle?: string) => {
+  const fetchGames = async (offset: number, searchTitle: string) => {
     const supabase = createClient()
     const from = offset * pageCount
     const to = from + pageCount - 1
@@ -64,18 +62,11 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     return data
   }
 
-  // const applyFilter = useCallback(() => {
-  //   await
-  // }, [debouncedSearch])
-
-  useEffect(() => {
-    if (debouncedSearch) {
-      const filtered = loadedGames.filter(game => game.title.toLowerCase().includes(debouncedSearch))
-      setFilteredGames(filtered)
-    } else {
-      setFilteredGames(loadedGames)
-    }
-  }, [debouncedSearch, loadedGames, setFilteredGames])
+  const handleApplyFilter = useCallback(() => {
+    setLoadedGames([])
+    setOffset(0)
+    loadMoreGames(0, debouncedSearch)
+  }, [debouncedSearch, offset])
 
   return (
     <>
@@ -83,11 +74,14 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
         displaying {filteredGames.length} out of {loadedGames.length}
       </div> */}
       <Search onChange={handleOnChange} />
+      <button className='btn btn-primary' onClick={handleApplyFilter}>
+        Apply Filter
+      </button>
       <div
         // ref={containerRef}
         className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4'
       >
-        {filteredGames.map(game => (
+        {loadedGames.map(game => (
           <div
             key={game.id}
             className='card card-compact bg-base-100 shadow-xl hover:shadow-cyan-500/50 hover:ring-2 hover:bg-base-300 hover:cursor-pointer'
@@ -114,7 +108,11 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
       </div>
       <div className='flex justify-center'>
         {!isLast && !isLoading && (
-          <button className='btn btn-primary' onClick={() => loadMoreGames(offset)} disabled={isLoading}>
+          <button
+            className='btn btn-primary'
+            onClick={() => loadMoreGames(offset, debouncedSearch)}
+            disabled={isLoading}
+          >
             Load More
           </button>
         )}
