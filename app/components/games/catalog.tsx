@@ -8,6 +8,7 @@ import { useDebounce } from "use-debounce"
 import Search from "@/app/components/common/search"
 import { Game } from "@/app/lib/types/Game"
 import { createClient } from "@/utils/supabase/client"
+import AddGames from "./addGames"
 
 interface CatalogProps {
   initialGames: Game[]
@@ -70,9 +71,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
 
   return (
     <>
-      {/* <div>
-        displaying {filteredGames.length} out of {loadedGames.length}
-      </div> */}
+      <AddGames />
       <Search onChange={handleOnChange} />
       <button className='btn btn-primary' onClick={handleApplyFilter}>
         Apply Filter
