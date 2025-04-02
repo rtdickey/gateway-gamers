@@ -58,7 +58,7 @@ export async function getGamesFromBgg(formData: FormData) {
     redirect("/error")
   }
 
-  let newGame: GameBox = {
+  const newGame: GameBox = {
     title: Array.isArray(title) ? title[0]["#text"] : title["#text"],
     age: gameData.boardgames.boardgame.age,
     min_players: gameData.boardgames.boardgame.minplayers,
