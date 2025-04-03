@@ -1,16 +1,20 @@
-export interface Game {
-  id: string
-  title: string
-  year_published: number
-  isExpansion: boolean
-  playingTime: number
-  playerCount: string
-  age: string
-  publisher: string
-  thumbnail: string
-  image: string
-  bggId: number
-}
+import { Tables } from "@/database.types"
+
+export interface Game extends Tables<"games"> {}
+
+// export interface Game {
+//   id: string
+//   title: string
+//   year_published: number
+//   isExpansion: boolean
+//   playingTime: number
+//   playerCount: string
+//   age: string
+//   publisher: string
+//   thumbnail: string
+//   image: string
+//   bggId: number
+// }
 
 export interface GameId {
   id: string

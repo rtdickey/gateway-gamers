@@ -26,17 +26,23 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
   const [filterLoaned, setFilterLoaned] = useState(false)
 
   useEffect(() => {
-    const filterGames = games.filter(game => {
+    const filterGames = games.filter(userGame => {
       return (
-        ((filterOwned && game.shelf === "Owned") ||
-          (filterWant && game.shelf === "Want") ||
-          (filterNotInterested && game.shelf === "Not Interested")) &&
-        game.title.toLowerCase().includes(debouncedSearch) &&
-        (filterPrivate ? game.isPrivate : true) &&
-        (filterLoaned ? game.isLoaned : true)
+        ((filterOwned && userGame.shelf === "Owned") ||
+          (filterWant && userGame.shelf === "Want") ||
+          (filterNotInterested && userGame.shelf === "Not Interested")) &&
+        userGame.game.title?.toLowerCase().includes(debouncedSearch) &&
+        (filterPrivate ? userGame.is_private : true) &&
+        (filterLoaned ? userGame.is_loaned : true)
       )
     })
-    setFilteredGames(filterGames.sort((a, b) => a.title.localeCompare(b.title)))
+    setFilteredGames(
+      filterGames.sort((a, b) => {
+        const titleA = a.game.title || ""
+        const titleB = b.game.title || ""
+        return titleA.localeCompare(titleB)
+      }),
+    )
   }, [
     filterOwned,
     filterWant,
@@ -125,20 +131,28 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
         </div>
       </div>
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4'>
-        {filteredGames.map(game => (
-          <div key={game.title} className='card card-compact bg-base-100 shadow-xl'>
+        {filteredGames.map(userGame => (
+          <div key={userGame.game_id} className='card card-compact bg-base-100 shadow-xl'>
             <figure>
-              <Image src={game.thumbnail} alt={game.title} width={200} height={150} className='h-40 w-full' />
+              {userGame.game.thumbnail && (
+                <Image
+                  src={userGame.game.thumbnail}
+                  alt={userGame.game.title ?? "Board Game Thumbnail"}
+                  width={200}
+                  height={150}
+                  className='h-40 w-full'
+                />
+              )}
             </figure>
             <div className='card-body'>
-              <h2 className='card-title'>{game.title}</h2>
-              <p>Playing Time: {game.playingTime}m</p>
-              <p>Player Count: {game.playerCount}</p>
-              <p>Age: {game.age}</p>
+              <h2 className='card-title'>{userGame.game.title}</h2>
+              <p>Playing Time: {userGame.game.playing_time}m</p>
+              <p>Player Count: {userGame.game.max_players}</p>
+              <p>Age: {userGame.game.age}</p>
               <div className='card-actions justify-end'>
-                {game.isPrivate && <div className='badge badge-accent badge-sm'>Private</div>}
-                {game.isLoaned && <div className='badge badge-secondary badge-sm'>Loaned</div>}
-                <div className='badge badge-sm font-bold'>{game.shelf}</div>
+                {userGame.is_private && <div className='badge badge-accent badge-sm'>Private</div>}
+                {userGame.is_loaned && <div className='badge badge-secondary badge-sm'>Loaned</div>}
+                <div className='badge badge-sm font-bold'>{userGame.shelf}</div>
               </div>
             </div>
           </div>
