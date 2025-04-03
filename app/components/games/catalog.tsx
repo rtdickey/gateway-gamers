@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
@@ -87,7 +87,13 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
           >
             <figure>
               {game.thumbnail && (
-                <Image src={game.thumbnail} alt={game.title} width={200} height={150} className='h-40 w-full' />
+                <Image
+                  src={game.thumbnail}
+                  alt={game.title ?? "Board Game Thumbnail"}
+                  width={200}
+                  height={150}
+                  className='h-40 w-full'
+                />
               )}
               {!game.thumbnail && (
                 <div className='h-40 w-full bg-base-200 flex flex-col items-center justify-center text-2xl font-semibold'>
@@ -98,8 +104,8 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
             </figure>
             <div className='card-body'>
               <h2 className='card-title'>{game.title}</h2>
-              <p>Playing Time: {game.playingTime}m</p>
-              <p>Player Count: {game.playerCount}</p>
+              <p>Playing Time: {game.playing_time}m</p>
+              <p>Player Count: {game.max_players}</p>
               <p>Age: {game.age}</p>
             </div>
           </div>
