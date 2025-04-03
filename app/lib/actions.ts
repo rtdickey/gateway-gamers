@@ -1,8 +1,7 @@
 "use server"
 
 import { createClient } from "@/utils/supabase/server"
-import { gameData, loanedGameData } from "../lib/placeholder-data"
-import { QueryData } from "@supabase/supabase-js"
+import { loanedGameData } from "../lib/placeholder-data"
 import { UserGame } from "./types/UserGame"
 
 export const getUserGames = async (userId: string) => {
@@ -28,7 +27,7 @@ export const getUserGames = async (userId: string) => {
       thumbnail,
       year_published,
       bgg_id
-    )
+    ).eq("user_id", ${userId})
   `)
 
   const { data, error } = await userGamesQuery.returns<UserGame[]>()
