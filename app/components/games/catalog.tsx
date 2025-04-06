@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
@@ -55,7 +55,10 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     let query = supabase!.from("games").select("*")
 
     if (searchTitle) {
-      query = query.ilike("title", `%${searchTitle}%`)
+      query = query.textSearch("title", searchTitle, {
+        config: "english",
+        type: "websearch",
+      })
     }
 
     query = query.range(from, to).order("title", { ascending: true })
@@ -63,7 +66,13 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     return data
   }
 
-  const handleApplyFilter = useCallback(() => {
+  // const handleApplyFilter = useCallback(() => {
+  //   setLoadedGames([])
+  //   setOffset(0)
+  //   loadMoreGames(0, debouncedSearch)
+  // }, [debouncedSearch, offset])
+
+  useEffect(() => {
     setLoadedGames([])
     setOffset(0)
     loadMoreGames(0, debouncedSearch)
@@ -73,13 +82,10 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     <>
       <AddGames />
       <Search onChange={handleOnChange} />
-      <button className='btn btn-primary' onClick={handleApplyFilter}>
+      {/* <button className='btn btn-primary' onClick={handleApplyFilter}>
         Apply Filter
-      </button>
-      <div
-        // ref={containerRef}
-        className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4'
-      >
+      </button> */}
+      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4'>
         {loadedGames.map(game => (
           <div
             key={game.id}
