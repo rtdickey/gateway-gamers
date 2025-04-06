@@ -20,7 +20,10 @@ export async function getGames({ page = 0, size = 100, searchTitle }: GetGamesPr
   let gamesQuery = supabase.from("games").select("*")
 
   if (searchTitle) {
-    gamesQuery = gamesQuery.ilike("title", `%${searchTitle}%`)
+    gamesQuery = gamesQuery.textSearch("title", searchTitle, {
+      config: "english",
+      type: "websearch",
+    })
   }
 
   gamesQuery = gamesQuery.order("title", { ascending: true }).range(startIndex, endIndex)

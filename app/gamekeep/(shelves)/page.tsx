@@ -5,7 +5,7 @@ import { getUserGames } from "@/app/lib/actions"
 const Page = async () => {
   const { user } = await getUser()
 
-  const games = await getUserGames("1")
+  const games = await getUserGames(user.id)
   return <Shelf games={games} />
 }
 
