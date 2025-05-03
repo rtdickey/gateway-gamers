@@ -171,12 +171,20 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
             <p>Player Count: {selectedGame?.max_players}</p>
             <p>Age: {selectedGame?.age}</p>
           </div>
-          <div className='modal-action'>
-            <form method='dialog'>
-              <button className='btn'>Close</button>
-            </form>
+          <div className='modal-action justify-between'>
+            <select defaultValue='Pick a color' className='select'>
+              <option disabled={true}>Pick a color</option>
+              <option>Crimson</option>
+              <option>Amber</option>
+              <option>Velvet</option>
+            </select>
+
+            <button className='btn' onClick={handleCloseModal}>
+              Close
+            </button>
           </div>
         </div>
+        <div className='modal-backdrop' onClick={handleCloseModal} />
       </dialog>
     </>
   )
