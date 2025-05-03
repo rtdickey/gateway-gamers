@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server"
 import { loanedGameData } from "../lib/placeholder-data"
 import { UserGame } from "./types/UserGame"
 import getUser from "../actions"
+import { revalidatePath } from "next/cache"
 
 export const addGameToShelf = async (gameId: string, shelf: string) => {
   const supabase = await createClient()
@@ -16,6 +17,21 @@ export const addGameToShelf = async (gameId: string, shelf: string) => {
     shelf,
   })
 
+  if (error) throw error
+  return data
+}
+
+export const deleteGameFromShelf = async (gameId: string) => {
+  const supabase = await createClient()
+
+  const { user } = await getUser()
+
+  const { data, error } = await supabase.from("user_games").delete().match({
+    user_id: user.id,
+    game_id: gameId,
+  })
+
+  revalidatePath("/gamekeep/shelf")
   if (error) throw error
   return data
 }

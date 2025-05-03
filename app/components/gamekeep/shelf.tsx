@@ -1,12 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
 
 import { UserGame } from "@/app/lib/types/UserGame"
 import Search from "@/app/components/common/search"
+import { deleteGameFromShelf } from "@/app/lib/actions"
 
 interface ShelfProps {
   games: UserGame[]
@@ -75,6 +76,13 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
     setFilteredShelfCount(filteredShelfCount + (filterNotInterested ? -1 : 1))
     setFilterNotInterested(!filterNotInterested)
   }
+
+  const handleDeleteGameFromShelf = useCallback(
+    async (gameId: string) => {
+      await deleteGameFromShelf(gameId)
+    },
+    [deleteGameFromShelf],
+  )
 
   return (
     <>
@@ -153,6 +161,11 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
                 {userGame.is_private && <div className='badge badge-accent badge-sm'>Private</div>}
                 {userGame.is_loaned && <div className='badge badge-secondary badge-sm'>Loaned</div>}
                 <div className='badge badge-sm font-bold'>{userGame.shelf}</div>
+              </div>
+              <div className='card-footer'>
+                <button className='btn btn-danger btn-sm' onClick={() => handleDeleteGameFromShelf(userGame.game_id)}>
+                  Delete
+                </button>
               </div>
             </div>
           </div>
