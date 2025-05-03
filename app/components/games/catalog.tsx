@@ -24,6 +24,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
   const [offset, setOffset] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
+  const [selectedShelf, setSelectedShelf] = useState<string | null>(null)
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value)
@@ -77,20 +78,22 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
 
   const handleCloseModal = useCallback(() => {
     setSelectedGame(null)
+    setSelectedShelf(null)
     ref.current?.close()
   }, [ref, setSelectedGame])
 
   const handleShelfSelect: ChangeEventHandler<HTMLSelectElement> = useCallback(
     e => {
-      const selectedShelf = e.target.value
-      console.log("Selected shelf:", selectedShelf)
-      console.log("Selected game:", selectedGame?.id)
-      if (selectedGame?.id === undefined) return
-      if (selectedShelf === "Select a shelf") return
-      addGameToShelf(selectedGame.id, selectedShelf)
+      setSelectedShelf(e.target.value)
     },
-    [selectedGame, addGameToShelf],
+    [setSelectedShelf],
   )
+
+  const handleAddToShelf = useCallback(async () => {
+    if (selectedGame?.id === undefined) return
+    await addGameToShelf(selectedGame.id, "Owned")
+    handleCloseModal()
+  }, [selectedGame, addGameToShelf, handleCloseModal])
 
   // const handleApplyFilter = useCallback(() => {
   //   setLoadedGames([])
@@ -185,16 +188,22 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
             <p>Age: {selectedGame?.age}</p>
           </div>
           <div className='modal-action justify-between'>
-            <select defaultValue='Select a shelf' className='select' onChange={e => handleShelfSelect(e)}>
-              <option disabled={true}>Select a shelf</option>
-              <option>Owned</option>
-              <option>Want</option>
-              <option>Not Interested</option>
+            <select value={selectedShelf ?? ""} className='select' onChange={e => handleShelfSelect(e)}>
+              <option disabled={true} value=''>
+                Select a shelf
+              </option>
+              <option value='Owned'>Owned</option>
+              <option value='Want'>Want</option>
+              <option value='Not Interested'>Not Interested</option>
             </select>
-
-            <button className='btn' onClick={handleCloseModal}>
-              Close
-            </button>
+            <div>
+              <button className='btn btn-primary' onClick={handleAddToShelf} disabled={!selectedShelf}>
+                Add
+              </button>
+              <button className='btn' onClick={handleCloseModal}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
         <div className='modal-backdrop' onClick={handleCloseModal} />
