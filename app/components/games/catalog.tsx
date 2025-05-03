@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
@@ -9,6 +9,7 @@ import Search from "@/app/components/common/search"
 import { Game } from "@/app/lib/types/Game"
 import { createClient } from "@/utils/supabase/client"
 import AddGames from "./addGames"
+import { addGameToShelf } from "@/app/lib/actions"
 
 interface CatalogProps {
   initialGames: Game[]
@@ -78,6 +79,18 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     setSelectedGame(null)
     ref.current?.close()
   }, [ref, setSelectedGame])
+
+  const handleShelfSelect: ChangeEventHandler<HTMLSelectElement> = useCallback(
+    e => {
+      const selectedShelf = e.target.value
+      console.log("Selected shelf:", selectedShelf)
+      console.log("Selected game:", selectedGame?.id)
+      if (selectedGame?.id === undefined) return
+      if (selectedShelf === "Select a shelf") return
+      addGameToShelf(selectedGame.id, selectedShelf)
+    },
+    [selectedGame, addGameToShelf],
+  )
 
   // const handleApplyFilter = useCallback(() => {
   //   setLoadedGames([])
@@ -172,11 +185,11 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
             <p>Age: {selectedGame?.age}</p>
           </div>
           <div className='modal-action justify-between'>
-            <select defaultValue='Pick a color' className='select'>
-              <option disabled={true}>Pick a color</option>
-              <option>Crimson</option>
-              <option>Amber</option>
-              <option>Velvet</option>
+            <select defaultValue='Select a shelf' className='select' onChange={e => handleShelfSelect(e)}>
+              <option disabled={true}>Select a shelf</option>
+              <option>Owned</option>
+              <option>Want</option>
+              <option>Not Interested</option>
             </select>
 
             <button className='btn' onClick={handleCloseModal}>

@@ -3,6 +3,22 @@
 import { createClient } from "@/utils/supabase/server"
 import { loanedGameData } from "../lib/placeholder-data"
 import { UserGame } from "./types/UserGame"
+import getUser from "../actions"
+
+export const addGameToShelf = async (gameId: string, shelf: string) => {
+  const supabase = await createClient()
+
+  const { user } = await getUser()
+
+  const { data, error } = await supabase.from("user_games").insert({
+    user_id: user.id,
+    game_id: gameId,
+    shelf,
+  })
+
+  if (error) throw error
+  return data
+}
 
 export const getUserGames = async (userId: string) => {
   const supabase = await createClient()
