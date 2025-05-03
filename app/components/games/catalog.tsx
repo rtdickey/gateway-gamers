@@ -91,9 +91,10 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
 
   const handleAddToShelf = useCallback(async () => {
     if (selectedGame?.id === undefined) return
-    await addGameToShelf(selectedGame.id, "Owned")
+    if (selectedShelf === null) return
+    await addGameToShelf(selectedGame.id, selectedShelf)
     handleCloseModal()
-  }, [selectedGame, addGameToShelf, handleCloseModal])
+  }, [selectedGame, selectedShelf, addGameToShelf, handleCloseModal])
 
   // const handleApplyFilter = useCallback(() => {
   //   setLoadedGames([])
