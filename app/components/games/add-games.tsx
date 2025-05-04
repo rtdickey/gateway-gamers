@@ -1,4 +1,4 @@
-import { getGamesFromBgg } from "@/app/games/actions"
+import { getGamesFromBgg } from "@/app/games/games-actions"
 
 const AddGames = () => {
   const handleOpenModal = () => {

@@ -1,7 +1,7 @@
 import getUser from "../actions"
-import BackToTop from "../components/common/top_button"
+import BackToTop from "../components/common/top-button"
 import Catalog from "../components/games/catalog"
-import { getGames } from "./actions"
+import { getGames } from "./games-actions"
 
 const Games = async () => {
   const pageCount = 100

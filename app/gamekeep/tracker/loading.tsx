@@ -1,4 +1,4 @@
-import TrackerTableSkeleton from "@/app/components/gamekeep/trackerTableSkeleton"
+import TrackerTableSkeleton from "@/app/components/gamekeep/tracker-table-skeleton"
 
 const Loading = () => {
   return (

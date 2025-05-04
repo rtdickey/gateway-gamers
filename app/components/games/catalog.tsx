@@ -6,10 +6,10 @@ import Image from "next/image"
 import { useDebounce } from "use-debounce"
 
 import Search from "@/app/components/common/search"
-import { Game } from "@/app/lib/types/Game"
 import { createClient } from "@/utils/supabase/client"
-import AddGames from "./addGames"
-import { addGameToShelf } from "@/app/lib/actions"
+import AddGames from "./add-games"
+import { addGameToShelf } from "@/app/lib/user-game-actions"
+import { Game } from "@/app/lib/types/game"
 
 interface CatalogProps {
   initialGames: Game[]

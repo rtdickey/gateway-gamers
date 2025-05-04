@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 
-import { LoanedGame } from "@/app/lib/types/LoanedGame"
+import { LoanedGame } from "@/app/lib/types/loaned-game"
 import { useCallback, useRef, useState } from "react"
 
 interface TrackerTableProps {

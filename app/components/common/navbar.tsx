@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import GatewayGamersLogo from "./GatewayGamersLogo"
+import GatewayGamersLogo from "./gateway-gamers-logo"
 
 interface NavbarProps {
   children: React.ReactNode
