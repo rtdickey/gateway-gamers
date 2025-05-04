@@ -30,7 +30,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     setSearchValue(e.target.value)
   }
 
-  const loadMoreGames = async (offset: number, searchTitle?: string) => {
+  const loadMoreGames = async (searchTitle?: string) => {
     setIsLoading(true)
     setOffset(prev => prev + 1)
     const newGames = await fetchGames(offset, searchTitle ?? "")
@@ -42,7 +42,9 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     }
 
     if (newGames) {
-      setLoadedGames(prevGames => [...prevGames, ...newGames])
+      setLoadedGames(prevGames => {
+        return [...prevGames, ...newGames]
+      })
     }
     setIsLoading(false)
   }
@@ -105,7 +107,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
   useEffect(() => {
     setLoadedGames([])
     setOffset(0)
-    loadMoreGames(0, debouncedSearch)
+    loadMoreGames(debouncedSearch)
   }, [debouncedSearch, offset])
 
   return (
@@ -150,11 +152,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
       </div>
       <div className='flex justify-center'>
         {!isLast && !isLoading && (
-          <button
-            className='btn btn-primary'
-            onClick={() => loadMoreGames(offset, debouncedSearch)}
-            disabled={isLoading}
-          >
+          <button className='btn btn-primary' onClick={() => loadMoreGames(debouncedSearch)} disabled={isLoading}>
             Load More
           </button>
         )}
