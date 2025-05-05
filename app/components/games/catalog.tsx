@@ -8,8 +8,8 @@ import { useDebounce } from "use-debounce"
 import Search from "@/app/components/common/search"
 import { createClient } from "@/utils/supabase/client"
 import AddGames from "./add-games"
-import { addGameToShelf } from "@/app/lib/user-game-actions"
 import { Game } from "@/app/lib/types/game"
+import { addGameToShelf } from "@/app/lib/user-game-actions"
 
 interface CatalogProps {
   initialGames: Game[]
