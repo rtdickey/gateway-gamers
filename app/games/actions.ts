@@ -2,7 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from "next/navigation"
-import { Game, GameBox, GameId } from "../lib/types/Game"
+import { Game, GameBox, GameId } from "../lib/types/game"
 import { XMLParser } from "fast-xml-parser"
 import { revalidatePath } from "next/cache"
 

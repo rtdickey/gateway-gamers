@@ -5,9 +5,9 @@ import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
 
-import { UserGame } from "@/app/lib/types/UserGame"
+import { UserGame } from "@/app/lib/types/user-game"
 import Search from "@/app/components/common/search"
-import { deleteGameFromShelf } from "@/app/lib/actions"
+import { deleteGameFromShelf } from "@/app/lib/actions/user-game-actions"
 
 interface ShelfProps {
   games: UserGame[]

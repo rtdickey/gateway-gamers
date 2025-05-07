@@ -1,5 +1,5 @@
 import Link from "next/link"
-import GatewayGamersLogo from "./components/common/GatewayGamersLogo"
+import GatewayGamersLogo from "./components/common/gateway-gamers-logo"
 
 export default function Home() {
   return (

@@ -1,4 +1,4 @@
-import { type LoanedGame } from "@/app/lib/types/LoanedGame"
+import { type LoanedGame } from "@/app/lib/types/loaned-game"
 
 export const loanedGameData: LoanedGame[] = [
   {
