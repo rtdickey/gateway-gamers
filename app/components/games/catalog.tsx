@@ -160,7 +160,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
         )}
         {isLoading && <div>Loading more games...</div>}
         {isLast && (
-          <div>All games have been loaded. Still haven't found what you were looking for? Add your game here!</div>
+          <div>All games have been loaded. Still haven&apos;t found what you were looking for? Add your game here!</div>
         )}
       </div>
       <dialog id='game_details_modal' className='modal modal-bottom sm:modal-middle' ref={ref}>
