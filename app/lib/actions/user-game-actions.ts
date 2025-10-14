@@ -1,9 +1,9 @@
 "use server"
 
 import { createClient } from "@/utils/supabase/server"
-import { loanedGameData } from "../lib/placeholder-data"
-import { UserGame } from "./types/UserGame"
-import getUser from "../actions"
+import { loanedGameData } from "../placeholder-data"
+import { UserGame } from "../types/user-game"
+import getUser from "../../actions"
 import { revalidatePath } from "next/cache"
 
 export const addGameToShelf = async (gameId: string, shelf: string) => {

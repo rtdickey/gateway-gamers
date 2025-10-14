@@ -1,4 +1,4 @@
-import ShelfSkeleton from "@/app/components/gamekeep/shelfSkeleton"
+import ShelfSkeleton from "@/app/components/gamekeep/shelf-skeleton"
 
 const Loading = () => {
   return (

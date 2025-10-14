@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import GatewayGamersLogo from "./GatewayGamersLogo"
+import GatewayGamersLogo from "./gateway-gamers-logo"
 
 interface NavbarProps {
   children: React.ReactNode
@@ -37,10 +37,10 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                 <Link href='/gamekeep'>Game Keep</Link>
               </li>
               <li>
-                <Link href='/gamekeep/tracker'>Tracker</Link>
+                <Link href='/games'>Browse Games</Link>
               </li>
               <li>
-                <Link href='/games'>Browse Games</Link>
+                <Link href='/gamekeep/tracker'>Tracker</Link>
               </li>
               <li>
                 <Link href='/about'>About</Link>

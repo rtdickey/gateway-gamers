@@ -1,6 +1,6 @@
 import { Tables } from "@/database.types"
 
-export interface Game extends Tables<"games"> {}
+export type Game = Tables<"games">
 
 // export interface Game {
 //   id: string

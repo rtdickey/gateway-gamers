@@ -18,8 +18,8 @@ const AddGames = () => {
 
   return (
     <>
-      <button className='btn' onClick={handleOpenModal}>
-        Add games to your keep
+      <button className='btn btn-primary' onClick={handleOpenModal}>
+        Search by BGG ID
       </button>
       <dialog id='addGamesModal' className='modal modal-bottom sm:modal-middle'>
         <div className='modal-box'>

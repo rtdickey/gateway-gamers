@@ -1,5 +1,5 @@
 import Image from "next/image"
-import GatewayGamersLogo from "./GatewayGamersLogo"
+import GatewayGamersLogo from "./gateway-gamers-logo"
 
 const Footer = () => {
   return (

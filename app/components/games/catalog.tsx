@@ -6,10 +6,10 @@ import Image from "next/image"
 import { useDebounce } from "use-debounce"
 
 import Search from "@/app/components/common/search"
-import { Game } from "@/app/lib/types/Game"
+import { Game } from "@/app/lib/types/game"
 import { createClient } from "@/utils/supabase/client"
-import AddGames from "./addGames"
-import { addGameToShelf } from "@/app/lib/actions"
+import AddGames from "./add-games"
+import { addGameToShelf } from "@/app/lib/actions/user-game-actions"
 
 interface CatalogProps {
   initialGames: Game[]
@@ -96,25 +96,31 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     handleCloseModal()
   }, [selectedGame, selectedShelf, addGameToShelf, handleCloseModal])
 
-  // const handleApplyFilter = useCallback(() => {
-  //   setLoadedGames([])
-  //   setOffset(0)
-  //   loadMoreGames(0, debouncedSearch)
-  // }, [debouncedSearch, offset])
-
-  useEffect(() => {
+  const handleApplyFilter = useCallback(() => {
     setLoadedGames([])
     setOffset(0)
     loadMoreGames(0, debouncedSearch)
-  }, [debouncedSearch, offset])
+  }, [debouncedSearch])
+
+  const handleClearFilter = useCallback(() => {
+    setSearchValue("")
+    handleApplyFilter()
+  }, [])
 
   return (
     <>
-      <AddGames />
-      <Search onChange={handleOnChange} />
-      {/* <button className='btn btn-primary' onClick={handleApplyFilter}>
-        Apply Filter
-      </button> */}
+      <div className='flex flex-row justify-between'>
+        <AddGames />
+        <div className='flex flex-row'>
+          <Search value={searchValue} onChange={handleOnChange} />
+          <button className='btn btn-primary' onClick={handleApplyFilter}>
+            Apply Filter
+          </button>
+          <button className='btn btn-secondary' onClick={handleClearFilter}>
+            Clear
+          </button>
+        </div>
+      </div>
       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4'>
         {loadedGames.map(game => (
           <div
@@ -160,7 +166,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
         )}
         {isLoading && <div>Loading more games...</div>}
         {isLast && (
-          <div>All games have been loaded. Still haven't found what you were looking for? Add your game here!</div>
+          <div>All games have been loaded. Still haven&apos;t found what you were looking for? Add your game here!</div>
         )}
       </div>
       <dialog id='game_details_modal' className='modal modal-bottom sm:modal-middle' ref={ref}>
