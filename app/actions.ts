@@ -14,4 +14,10 @@ const getUser = async () => {
   return { user: data.user }
 }
 
+export const signOut = async () => {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect("/login")
+}
+
 export default getUser

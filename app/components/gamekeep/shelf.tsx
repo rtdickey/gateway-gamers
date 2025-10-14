@@ -46,56 +46,9 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
     })
   }, [games, filterShelf, debouncedSearch, filterPrivate, filterLoaned])
 
-  // useEffect(() => {
-  //   const filterGames = games.filter(userGame => {
-  //     return (
-  //       ((filterOwned && userGame.shelf === "Owned") ||
-  //         (filterWant && userGame.shelf === "Want") ||
-  //         (filterNotInterested && userGame.shelf === "Not Interested")) &&
-  //       userGame.game.title?.toLowerCase().includes(debouncedSearch) &&
-  //       (filterPrivate ? userGame.is_private : true) &&
-  //       (filterLoaned ? userGame.is_loaned : true)
-  //     )
-  //   })
-  //   setFilteredGames(
-  //     filterGames.sort((a, b) => {
-  //       const titleA = a.game.title || ""
-  //       const titleB = b.game.title || ""
-  //       return titleA.localeCompare(titleB)
-  //     }),
-  //   )
-  // }, [
-  //   filterOwned,
-  //   filterWant,
-  //   filterNotInterested,
-  //   filterPrivate,
-  //   filterLoaned,
-  //   debouncedSearch,
-  //   setFilteredGames,
-  //   games,
-  // ])
-
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value)
   }
-
-  // const handleFilterOwned = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (filterOwned && filteredShelfCount === 1) return
-  //   setFilteredShelfCount(filteredShelfCount + (filterOwned ? -1 : 1))
-  //   setFilterOwned(!filterOwned)
-  // }
-
-  // const handleFilterWant = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (filterWant && filteredShelfCount === 1) return
-  //   setFilteredShelfCount(filteredShelfCount + (filterWant ? -1 : 1))
-  //   setFilterWant(!filterWant)
-  // }
-
-  // const handleFilterNotInterested = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (filterNotInterested && filteredShelfCount === 1) return
-  //   setFilteredShelfCount(filteredShelfCount + (filterNotInterested ? -1 : 1))
-  //   setFilterNotInterested(!filterNotInterested)
-  // }
 
   const handleDeleteGameFromShelf = useCallback(
     async (gameId: string) => {
