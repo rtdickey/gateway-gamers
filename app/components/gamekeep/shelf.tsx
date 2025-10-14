@@ -59,7 +59,7 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
 
   return (
     <>
-      <Search onChange={handleOnChange} value={searchValue} />
+      <Search value={searchValue} onChange={handleOnChange} />
       <div className='flex flex-col justify-start md:flex-row md:justify-between gap-4'>
         <div className='flex justify-start gap-4'>
           <ShelfTab shelf={null} isSelected={filterShelf === null} setFilterShelf={setFilterShelf} />
