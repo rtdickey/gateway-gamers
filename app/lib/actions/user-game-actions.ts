@@ -59,8 +59,8 @@ export const getUserGames = async (userId: string) => {
       thumbnail,
       year_published,
       bgg_id
-    ).eq("user_id", ${userId})
-  `)
+    )
+  `).eq("user_id", userId)
 
   const { data, error } = await userGamesQuery.returns<UserGame[]>()
   if (error) throw error
