@@ -38,7 +38,10 @@ export const deleteGameFromShelf = async (gameId: string) => {
 
 export const getUserGames = async (userId: string) => {
   const supabase = await createClient()
-  const userGamesQuery = supabase.from("user_games").select(`
+  const userGamesQuery = supabase
+    .from("user_games")
+    .select(
+      `
     id,
     shelf,
     is_private,
@@ -60,7 +63,9 @@ export const getUserGames = async (userId: string) => {
       year_published,
       bgg_id
     )
-  `).eq("user_id", userId)
+  `,
+    )
+    .eq("user_id", userId)
 
   const { data, error } = await userGamesQuery.returns<UserGame[]>()
   if (error) throw error
