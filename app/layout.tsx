@@ -16,7 +16,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      {/* <html lang='en' data-theme='gg-light'>  */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-100 text-base-content`}>
         <Navbar>{children}</Navbar>
         <Footer />

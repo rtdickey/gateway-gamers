@@ -5,10 +5,7 @@ export default function LoginPage() {
     <form>
       <label htmlFor='email'>Email:</label>
       <input id='email' name='email' type='email' required />
-      {/* <label htmlFor='password'>Password:</label>
-      <input id='password' name='password' type='password' required /> */}
       <button formAction={login}>Send Link</button>
-      {/* <button formAction={signup}>Sign up</button> */}
     </form>
   )
 }

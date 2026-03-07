@@ -1,5 +1,7 @@
+import { Shelf } from "@/app/lib/types/shelf"
+
 interface ShelfTabProps {
-  shelf: string | null
+  shelf: Shelf | null
   isSelected: boolean
   setFilterShelf: (shelf: string | null) => void
 }
