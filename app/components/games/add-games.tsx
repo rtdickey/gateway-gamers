@@ -44,7 +44,9 @@ const AddGames = () => {
           <form action={handleSubmit} className='flex flex-col gap-3 mt-4'>
             <div className='form-control'>
               <label className='label'>
-                <span className='label-text'>Title <span className='text-error'>*</span></span>
+                <span className='label-text'>
+                  Title <span className='text-error'>*</span>
+                </span>
               </label>
               <input
                 type='text'
@@ -129,25 +131,14 @@ const AddGames = () => {
                 <label className='label'>
                   <span className='label-text'>Min Age</span>
                 </label>
-                <input
-                  type='number'
-                  name='age'
-                  placeholder='10'
-                  className='input input-bordered w-full'
-                  min={0}
-                />
+                <input type='number' name='age' placeholder='10' className='input input-bordered w-full' min={0} />
               </div>
 
               <div className='form-control justify-end'>
                 <label className='label cursor-pointer gap-2'>
                   <span className='label-text'>Expansion?</span>
                   <input type='hidden' name='is_expansion' value='false' />
-                  <input
-                    type='checkbox'
-                    name='is_expansion'
-                    value='true'
-                    className='checkbox'
-                  />
+                  <input type='checkbox' name='is_expansion' value='true' className='checkbox' />
                 </label>
               </div>
             </div>

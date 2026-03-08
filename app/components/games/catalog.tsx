@@ -23,11 +23,7 @@ const NoImagePlaceholder = () => (
       stroke='currentColor'
       strokeWidth={1}
     >
-      <path
-        strokeLinecap='round'
-        strokeLinejoin='round'
-        d='M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V7'
-      />
+      <path strokeLinecap='round' strokeLinejoin='round' d='M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V7' />
     </svg>
     <span className='text-xs font-medium tracking-wide uppercase'>No Image</span>
   </div>
@@ -211,7 +207,11 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
                 <h2 className='font-semibold text-sm leading-tight line-clamp-2'>{game.title}</h2>
                 <p className='text-xs text-base-content/50 mt-1 flex flex-wrap gap-x-1.5'>
                   {formatPlayers(game) && <span>{formatPlayers(game)}</span>}
-                  {(game.playing_time ?? 0) > 0 && <span>{formatPlayers(game) ? "·" : ""} {game.playing_time}m</span>}
+                  {(game.playing_time ?? 0) > 0 && (
+                    <span>
+                      {formatPlayers(game) ? "·" : ""} {game.playing_time}m
+                    </span>
+                  )}
                   {(game.year_published ?? 0) > 0 && <span>· {game.year_published}</span>}
                 </p>
               </div>
@@ -264,9 +264,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
                   {(selectedGame.year_published ?? 0) > 0 && (
                     <p className='text-base-content/40 text-sm mt-0.5'>{selectedGame.year_published}</p>
                   )}
-                  {selectedGame.is_expansion && (
-                    <span className='badge badge-secondary badge-sm mt-2'>Expansion</span>
-                  )}
+                  {selectedGame.is_expansion && <span className='badge badge-secondary badge-sm mt-2'>Expansion</span>}
                 </div>
               </div>
 
@@ -283,9 +281,7 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
                 </div>
                 <div className='bg-base-200 rounded-xl p-3'>
                   <p className='text-xs text-base-content/40 uppercase tracking-wide font-medium'>Min Age</p>
-                  <p className='font-bold text-sm mt-1'>
-                    {(selectedGame.age ?? 0) > 0 ? `${selectedGame.age}+` : "—"}
-                  </p>
+                  <p className='font-bold text-sm mt-1'>{(selectedGame.age ?? 0) > 0 ? `${selectedGame.age}+` : "—"}</p>
                 </div>
               </div>
             </>
@@ -321,4 +317,3 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
 }
 
 export default Catalog
-
