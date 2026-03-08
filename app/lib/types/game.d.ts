@@ -8,7 +8,7 @@ export interface GameId {
 
 export interface GameBox {
   id?: string
-  bgg_id: number
+  bgg_id?: number | null
   title: string
   thumbnail: string
   image: string
