@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEventHandler, useCallback, useRef, useState } from "react"
+import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { useDebounce } from "use-debounce"
 import { Game } from "@/app/lib/types/game"
@@ -11,6 +11,7 @@ import { addGameToShelf } from "@/app/lib/actions/user-game-actions"
 interface CatalogProps {
   initialGames: Game[]
   pageCount?: number
+  fetchOverride?: (page: number, search: string, pageCount: number) => Promise<Game[] | null>
 }
 
 const NoImagePlaceholder = () => (
@@ -29,7 +30,7 @@ const NoImagePlaceholder = () => (
   </div>
 )
 
-const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
+const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100, fetchOverride }) => {
   const [loadedGames, setLoadedGames] = useState<Game[]>(initialGames)
   const [searchValue, setSearchValue] = useState("")
   const [debouncedSearch] = useDebounce(searchValue.toLowerCase(), 500)
@@ -40,8 +41,10 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
   const [selectedShelf, setSelectedShelf] = useState<string | null>(null)
 
   const detailsRef = useRef<HTMLDialogElement>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   const fetchGames = async (page: number, searchTitle: string) => {
+    if (fetchOverride) return fetchOverride(page, searchTitle, pageCount)
     const supabase = createClient()
     const from = page * pageCount
     const to = from + pageCount - 1
@@ -74,10 +77,22 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
     loadGames(0, "", false)
   }, [])
 
-  const handleLoadMore = useCallback(() => {
-    loadGames(offset, debouncedSearch, true)
-    setOffset(prev => prev + 1)
-  }, [offset, debouncedSearch])
+  useEffect(() => {
+    if (isLast || isLoading) return
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadGames(offset, debouncedSearch, true)
+          setOffset(prev => prev + 1)
+        }
+      },
+      { rootMargin: "300px" },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [isLast, isLoading, offset, debouncedSearch])
 
   const handleShowModal = useCallback((game: Game) => {
     setSelectedGame(game)
@@ -220,18 +235,13 @@ const Catalog: React.FC<CatalogProps> = ({ initialGames, pageCount = 100 }) => {
         </div>
       )}
 
-      {/* Load More */}
-      <div className='flex flex-col items-center gap-2 py-4'>
+      {/* Infinite scroll sentinel */}
+      <div ref={sentinelRef} className='flex flex-col items-center gap-2 py-6'>
         {isLoading && (
           <div className='flex items-center gap-2 text-base-content/50 text-sm'>
             <span className='loading loading-spinner loading-sm' />
             Loading games...
           </div>
-        )}
-        {!isLoading && !isLast && loadedGames.length > 0 && (
-          <button className='btn btn-outline btn-wide' onClick={handleLoadMore}>
-            Load More
-          </button>
         )}
         {!isLoading && isLast && loadedGames.length > 0 && (
           <p className='text-base-content/40 text-sm'>All {loadedGames.length} games loaded</p>
