@@ -1,8 +1,8 @@
 "use server"
 
 import { createClient } from "@/utils/supabase/server"
-import { loanedGameData } from "../placeholder-data"
 import { UserGame } from "../types/user-game"
+import { LoanedGame } from "../types/loaned-game"
 import getUser from "../../actions"
 import { revalidatePath } from "next/cache"
 
@@ -73,6 +73,49 @@ export const getUserGames = async (userId: string) => {
 }
 
 export const getLoanedGames = async (userId: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return loanedGameData.filter(game => game.ownerId === userId).sort((a, b) => (a.loanedDate < b.loanedDate ? -1 : 1))
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("loans")
+    .select(
+      `
+      id,
+      created_at,
+      user_game_id,
+      borrower,
+      loaned_at,
+      returned_at,
+      user_game:user_games (
+        id,
+        shelf,
+        is_private,
+        is_loaned,
+        user_id,
+        game_id,
+        created_at,
+        modified_at,
+        game:games (
+          id,
+          title,
+          age,
+          min_players,
+          max_players,
+          is_expansion,
+          publisher,
+          playing_time,
+          image,
+          thumbnail,
+          year_published,
+          bgg_id
+        )
+      )
+    `,
+    )
+    .eq("user_game.user_id", userId)
+    .is("returned_at", null)
+    .order("loaned_at", { ascending: true })
+    .returns<LoanedGame[]>()
+
+  if (error) throw error
+  return data
 }
