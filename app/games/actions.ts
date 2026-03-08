@@ -6,6 +6,12 @@ import { Game, GameBox, GameId } from "../lib/types/game"
 import { XMLParser } from "fast-xml-parser"
 import { revalidatePath } from "next/cache"
 
+export interface BggSearchResult {
+  bgg_id: number
+  title: string
+  year_published: number | null
+}
+
 export interface GetGamesProps {
   page?: number
   size?: number
@@ -40,14 +46,57 @@ export async function getGames({ page = 0, size = 100, searchTitle }: GetGamesPr
   return { totalGames: totalGames, totalPages: totalPages, games: games }
 }
 
-export async function getGamesFromBgg(formData: FormData) {
-  const gameId = formData.get("gameId") as string
-  const game = await fetch(`https://boardgamegeek.com/xmlapi/boardgame/${gameId}`)
-  const gameData = convertResponseToJson(await game.text())
+const bggHeaders = (): HeadersInit =>
+  process.env.BGG_BEARER_TOKEN ? { Authorization: `Bearer ${process.env.BGG_BEARER_TOKEN}` } : {}
 
-  const title = gameData.boardgames.boardgame.name
-  const publisher = gameData.boardgames.boardgame.boardgamepublisher
-  const bgg_id = parseInt(gameData.boardgames.boardgame["objectid"])
+export async function searchBggByTitle(title: string): Promise<BggSearchResult[]> {
+  const response = await fetch(
+    `https://boardgamegeek.com/xmlapi2/search?query=${encodeURIComponent(title)}&type=boardgame`,
+    { headers: bggHeaders() },
+  )
+  const data = convertResponseToJson(await response.text())
+
+  const items = data.items?.item
+  if (!items) return []
+
+  const itemsArray = Array.isArray(items) ? items : [items]
+
+  return itemsArray.map((item: any) => {
+    const names = Array.isArray(item.name) ? item.name : [item.name]
+    const primary = names.find((n: any) => n.type === "primary") ?? names[0]
+    return {
+      bgg_id: parseInt(item.id),
+      title: primary?.value ?? "Unknown",
+      year_published: item.yearpublished?.value ? parseInt(item.yearpublished.value) : null,
+    }
+  })
+}
+
+export async function addGameByBggId(bggId: number): Promise<{ error: string } | void> {
+  let data: any = null
+
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const response = await fetch(`https://boardgamegeek.com/xmlapi2/thing?id=${bggId}`, { headers: bggHeaders() })
+    if (response.status === 401 || response.status === 403) {
+      return { error: `BGG API authentication failed (${response.status}). Set BGG_BEARER_TOKEN in your environment.` }
+    }
+    data = convertResponseToJson(await response.text())
+    if (data.items?.item) break
+    if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 2000))
+  }
+
+  const item = data?.items?.item
+  if (!item) return { error: `No game found on BGG for ID ${bggId}` }
+
+  const names = Array.isArray(item.name) ? item.name : [item.name]
+  const primaryName = names.find((n: any) => n.type === "primary") ?? names[0]
+  const title = primaryName?.value ?? "Unknown"
+
+  const links = Array.isArray(item.link) ? item.link : item.link ? [item.link] : []
+  const publisherLink = links.find((l: any) => l.type === "boardgamepublisher")
+  const publisher = publisherLink?.value ?? "Unknown"
+
+  const bgg_id = parseInt(item.id)
   const supabase = await createClient()
 
   const { data: existingGame, error: getError } = await supabase
@@ -57,32 +106,33 @@ export async function getGamesFromBgg(formData: FormData) {
     .single<GameId>()
 
   if (getError && getError.code !== "PGRST116") {
-    console.log(getError)
-    redirect("/error")
+    console.error("[addGameByBggId] select error:", getError)
+    return { error: getError.message }
   }
 
   const newGame: GameBox = {
-    title: Array.isArray(title) ? title[0]["#text"] : title["#text"],
-    age: gameData.boardgames.boardgame.age,
-    min_players: gameData.boardgames.boardgame.minplayers,
-    max_players: gameData.boardgames.boardgame.maxplayers,
-    is_expansion: gameData.boardgames.boardgame.expansion === "1",
-    publisher: Array.isArray(publisher) ? publisher[0]["#text"] : publisher["#text"],
-    playing_time: gameData.boardgames.boardgame.playingtime,
-    image: gameData.boardgames.boardgame.image,
-    thumbnail: gameData.boardgames.boardgame.thumbnail,
-    year_published: gameData.boardgames.boardgame.yearpublished,
-    bgg_id: bgg_id,
+    title,
+    age: parseInt(item.minage?.value ?? "0"),
+    min_players: parseInt(item.minplayers?.value ?? "0"),
+    max_players: parseInt(item.maxplayers?.value ?? "0"),
+    is_expansion: item.type === "boardgameexpansion",
+    publisher,
+    playing_time: parseInt(item.playingtime?.value ?? "0"),
+    image: item.image ?? "",
+    thumbnail: item.thumbnail ?? "",
+    year_published: parseInt(item.yearpublished?.value ?? "0"),
+    bgg_id,
   }
 
   if (existingGame?.id) {
     newGame.id = existingGame.id
   }
 
-  const { data, error } = await supabase.from("games").upsert(newGame)
+  const { error } = await supabase.from("games").upsert(newGame)
 
   if (error) {
-    redirect("/error")
+    console.error("[addGameByBggId] upsert error:", error)
+    return { error: error.message }
   }
 
   revalidatePath("/games")
