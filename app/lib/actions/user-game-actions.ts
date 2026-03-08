@@ -83,6 +83,7 @@ export const getLoanedGames = async (userId: string) => {
       created_at,
       user_game_id,
       borrower,
+      borrower_id,
       loaned_at,
       returned_at,
       user_game:user_games (
@@ -111,7 +112,7 @@ export const getLoanedGames = async (userId: string) => {
       )
     `,
     )
-    .eq("user_game.user_id", userId)
+    .or(`user_game.user_id.eq.${userId},borrower_id.eq.${userId}`)
     .is("returned_at", null)
     .order("loaned_at", { ascending: true })
     .returns<LoanedGame[]>()

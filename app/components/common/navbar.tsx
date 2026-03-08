@@ -1,12 +1,12 @@
 import Link from "next/link"
-import Image from "next/image"
 import GatewayGamersLogo from "./gateway-gamers-logo"
 
 interface NavbarProps {
   children: React.ReactNode
+  isAdmin?: boolean
 }
 
-const Navbar: React.FC<NavbarProps> = ({ children }) => {
+const Navbar: React.FC<NavbarProps> = ({ children, isAdmin }) => {
   return (
     <div className='drawer'>
       <input id='my-drawer-3' type='checkbox' className='drawer-toggle' />
@@ -32,7 +32,6 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
           </div>
           <div className='hidden flex-none lg:block'>
             <ul className='menu menu-horizontal'>
-              {/* Navbar menu content here */}
               <li>
                 <Link href='/gamekeep'>Game Keep</Link>
               </li>
@@ -43,8 +42,16 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
                 <Link href='/gamekeep/tracker'>Tracker</Link>
               </li>
               <li>
+                <Link href='/friends'>Friends</Link>
+              </li>
+              <li>
                 <Link href='/about'>About</Link>
               </li>
+              {isAdmin && (
+                <li>
+                  <Link href='/admin/users'>Admin</Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -68,8 +75,16 @@ const Navbar: React.FC<NavbarProps> = ({ children }) => {
             <Link href='/gamekeep/tracker'>Tracker</Link>
           </li>
           <li>
+            <Link href='/friends'>Friends</Link>
+          </li>
+          <li>
             <Link href='/about'>About</Link>
           </li>
+          {isAdmin && (
+            <li>
+              <Link href='/admin/users'>Admin</Link>
+            </li>
+          )}
         </ul>
       </div>
     </div>

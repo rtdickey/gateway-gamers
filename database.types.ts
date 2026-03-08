@@ -1,14 +1,57 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
+export type AppRole = "admin" | "contributor" | "user"
+export type FriendshipStatus = "pending" | "accepted" | "declined"
+
 export type Database = {
   public: {
     Tables: {
+      friendships: {
+        Row: {
+          id: string
+          created_at: string
+          requester_id: string
+          addressee_id: string
+          status: FriendshipStatus
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          requester_id: string
+          addressee_id: string
+          status?: FriendshipStatus
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          requester_id?: string
+          addressee_id?: string
+          status?: FriendshipStatus
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_addressee_id_fkey"
+            columns: ["addressee_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loans: {
         Row: {
           id: string
           created_at: string
           user_game_id: number
           borrower: string
+          borrower_id: string | null
           loaned_at: string
           returned_at: string | null
         }
@@ -17,6 +60,7 @@ export type Database = {
           created_at?: string
           user_game_id: number
           borrower: string
+          borrower_id?: string | null
           loaned_at?: string
           returned_at?: string | null
         }
@@ -25,6 +69,7 @@ export type Database = {
           created_at?: string
           user_game_id?: number
           borrower?: string
+          borrower_id?: string | null
           loaned_at?: string
           returned_at?: string | null
         }
@@ -34,6 +79,13 @@ export type Database = {
             columns: ["user_game_id"]
             isOneToOne: false
             referencedRelation: "user_games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -139,16 +191,19 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          role: AppRole
         }
         Insert: {
           display_name?: string | null
           email?: string | null
           id: string
+          role?: AppRole
         }
         Update: {
           display_name?: string | null
           email?: string | null
           id?: string
+          role?: AppRole
         }
         Relationships: []
       }
@@ -160,7 +215,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_role: AppRole
+      friendship_status: FriendshipStatus
     }
     CompositeTypes: {
       [_ in never]: never
