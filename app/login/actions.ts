@@ -8,19 +8,21 @@ import { createClient } from "@/utils/supabase/server"
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get("email") as string,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+    },
   }
 
   const { error } = await supabase.auth.signInWithOtp(data)
 
   if (error) {
-    redirect("/error")
+    console.error("signInWithOtp error:", error.message, error.status)
+    redirect(`/error?message=${encodeURIComponent(error.message)}&status=${error.status ?? ""}`)
   }
 
-  redirect("/")
+  redirect("/login?sent=true")
 }
 
 export async function signup(formData: FormData) {
