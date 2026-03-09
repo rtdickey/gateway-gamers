@@ -1,8 +1,8 @@
 "use server"
 
 import { createClient } from "@/utils/supabase/server"
-import { loanedGameData } from "../placeholder-data"
 import { UserGame } from "../types/user-game"
+import { LoanedGame } from "../types/loaned-game"
 import getUser from "../../actions"
 import { revalidatePath } from "next/cache"
 
@@ -38,7 +38,10 @@ export const deleteGameFromShelf = async (gameId: string) => {
 
 export const getUserGames = async (userId: string) => {
   const supabase = await createClient()
-  const userGamesQuery = supabase.from("user_games").select(`
+  const userGamesQuery = supabase
+    .from("user_games")
+    .select(
+      `
     id,
     shelf,
     is_private,
@@ -59,8 +62,10 @@ export const getUserGames = async (userId: string) => {
       thumbnail,
       year_published,
       bgg_id
-    ).eq("user_id", ${userId})
-  `)
+    )
+  `,
+    )
+    .eq("user_id", userId)
 
   const { data, error } = await userGamesQuery.returns<UserGame[]>()
   if (error) throw error
@@ -68,6 +73,76 @@ export const getUserGames = async (userId: string) => {
 }
 
 export const getLoanedGames = async (userId: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return loanedGameData.filter(game => game.ownerId === userId).sort((a, b) => (a.loanedDate < b.loanedDate ? -1 : 1))
+  const supabase = await createClient()
+
+  // Get the user's own user_game IDs so we can filter loans they created
+  const { data: userGameIds, error: userGameError } = await supabase
+    .from("user_games")
+    .select("id")
+    .eq("user_id", userId)
+
+  if (userGameError) throw userGameError
+
+  const ids = (userGameIds ?? []).map(ug => ug.id)
+
+  const query = supabase
+    .from("loans")
+    .select(
+      `
+      id,
+      created_at,
+      user_game_id,
+      borrower,
+      borrower_id,
+      loaned_at,
+      returned_at,
+      user_game:user_games (
+        id,
+        shelf,
+        is_private,
+        is_loaned,
+        user_id,
+        game_id,
+        created_at,
+        modified_at,
+        game:games (
+          id,
+          title,
+          age,
+          min_players,
+          max_players,
+          is_expansion,
+          publisher,
+          playing_time,
+          image,
+          thumbnail,
+          year_published,
+          bgg_id
+        )
+      )
+    `,
+    )
+    .is("returned_at", null)
+    .order("loaned_at", { ascending: true })
+
+  const { data, error } =
+    ids.length > 0
+      ? await query.or(`user_game_id.in.(${ids.join(",")}),borrower_id.eq.${userId}`).returns<LoanedGame[]>()
+      : await query.eq("borrower_id", userId).returns<LoanedGame[]>()
+
+  if (error) throw error
+  return data
+}
+
+export const returnGame = async (loanId: string) => {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("loans")
+    .update({ returned_at: new Date().toISOString() })
+    .eq("id", loanId)
+
+  revalidatePath("/gamekeep/tracker")
+  if (error) throw error
+  return data
 }

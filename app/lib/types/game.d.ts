@@ -2,27 +2,13 @@ import { Tables } from "@/database.types"
 
 export type Game = Tables<"games">
 
-// export interface Game {
-//   id: string
-//   title: string
-//   year_published: number
-//   isExpansion: boolean
-//   playingTime: number
-//   playerCount: string
-//   age: string
-//   publisher: string
-//   thumbnail: string
-//   image: string
-//   bggId: number
-// }
-
 export interface GameId {
   id: string
 }
 
 export interface GameBox {
   id?: string
-  bgg_id: number
+  bgg_id?: number | null
   title: string
   thumbnail: string
   image: string

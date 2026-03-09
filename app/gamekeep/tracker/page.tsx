@@ -5,7 +5,7 @@ import { getLoanedGames } from "@/app/lib/actions/user-game-actions"
 const Page = async () => {
   const { user } = await getUser()
 
-  const loanedGames = await getLoanedGames("1")
+  const loanedGames = await getLoanedGames(user.id)
 
   return (
     <>

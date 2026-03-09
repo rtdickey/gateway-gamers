@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 
+import { returnGame } from "@/app/lib/actions/user-game-actions"
 import { LoanedGame } from "@/app/lib/types/loaned-game"
 import { useCallback, useRef, useState } from "react"
 
@@ -34,8 +35,10 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
     ref.current?.close()
   }, [ref, setSelectedLoanedGame])
 
-  const handleReturnGame = useCallback(() => {
-    console.log("Game Returned: ", selectedLoanedGame?.title, selectedLoanedGame?.borrower, selectedLoanedGame?.loanId)
+  const handleReturnGame = useCallback(async () => {
+    if (selectedLoanedGame) {
+      await returnGame(selectedLoanedGame.id)
+    }
     handleCloseModal()
   }, [handleCloseModal, selectedLoanedGame])
 
@@ -53,31 +56,32 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
         </thead>
         <tbody>
           {loanedGames.map(loanedGame => (
-            <tr key={loanedGame.borrowerId + "-" + loanedGame.title}>
+            <tr key={loanedGame.id}>
               <td>
                 <div className='flex items-center gap-3'>
                   <div className='avatar hidden sm:block'>
                     <div className='mask mask-squircle h-12 w-12'>
-                      <Image
-                        src={loanedGame.thumbnail}
-                        alt={loanedGame.title}
-                        width={200}
-                        height={150}
-                        className='w-full'
-                      />
+                      {loanedGame.user_game?.game?.thumbnail && (
+                        <Image
+                          src={loanedGame.user_game.game.thumbnail}
+                          alt={loanedGame.user_game.game.title ?? "Board Game Thumbnail"}
+                          width={200}
+                          height={150}
+                          className='w-full'
+                        />
+                      )}
                     </div>
                   </div>
                   <div>
-                    <div className='font-bold'>{loanedGame.title}</div>
+                    <div className='font-bold'>{loanedGame.user_game?.game?.title}</div>
                   </div>
                 </div>
               </td>
               <td>{loanedGame.borrower}</td>
               <td>
-                <div>{loanedGame.loanedDate}</div>
-                <div>({daysSinceLoan(loanedGame.loanedDate)} days)</div>
+                <div>{loanedGame.loaned_at.split("T")[0]}</div>
+                <div>({daysSinceLoan(loanedGame.loaned_at)} days)</div>
               </td>
-              <td></td>
               <td>
                 <button className='btn btn-link' onClick={() => handleShowModal(loanedGame)}>
                   Returned?
@@ -91,9 +95,7 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
         <div className='modal-box'>
           <h3 className='font-bold text-lg'>
             {selectedLoanedGame ? (
-              <span>
-                It&apos;s been {daysSinceLoan(selectedLoanedGame.loanedDate)} days since you loaned this game.
-              </span>
+              <span>It&apos;s been {daysSinceLoan(selectedLoanedGame.loaned_at)} days since you loaned this game.</span>
             ) : (
               <span>Uh Oh!</span>
             )}
@@ -101,7 +103,7 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
           <p className='py-4'>
             {selectedLoanedGame ? (
               <span>
-                Has {selectedLoanedGame?.borrower} returned {selectedLoanedGame?.title}?
+                Has {selectedLoanedGame?.borrower} returned {selectedLoanedGame?.user_game?.game?.title}?
               </span>
             ) : (
               <span>No loaned game information found...</span>

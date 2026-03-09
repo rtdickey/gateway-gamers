@@ -1,14 +1,95 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
+export type AppRole = "admin" | "contributor" | "user"
+export type FriendshipStatus = "pending" | "accepted" | "declined"
 
 export type Database = {
   public: {
     Tables: {
+      friendships: {
+        Row: {
+          id: string
+          created_at: string
+          requester_id: string
+          addressee_id: string
+          status: FriendshipStatus
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          requester_id: string
+          addressee_id: string
+          status?: FriendshipStatus
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          requester_id?: string
+          addressee_id?: string
+          status?: FriendshipStatus
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_addressee_id_fkey"
+            columns: ["addressee_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loans: {
+        Row: {
+          id: string
+          created_at: string
+          user_game_id: number
+          borrower: string
+          borrower_id: string | null
+          loaned_at: string
+          returned_at: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          user_game_id: number
+          borrower: string
+          borrower_id?: string | null
+          loaned_at?: string
+          returned_at?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          user_game_id?: number
+          borrower?: string
+          borrower_id?: string | null
+          loaned_at?: string
+          returned_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loans_user_game_id_fkey"
+            columns: ["user_game_id"]
+            isOneToOne: false
+            referencedRelation: "user_games"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loans_borrower_id_fkey"
+            columns: ["borrower_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       games: {
         Row: {
           age: number | null
@@ -110,16 +191,19 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          role: AppRole
         }
         Insert: {
           display_name?: string | null
           email?: string | null
           id: string
+          role?: AppRole
         }
         Update: {
           display_name?: string | null
           email?: string | null
           id?: string
+          role?: AppRole
         }
         Relationships: []
       }
@@ -131,7 +215,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_role: AppRole
+      friendship_status: FriendshipStatus
     }
     CompositeTypes: {
       [_ in never]: never
@@ -158,10 +243,8 @@ export type Tables<
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -169,9 +252,7 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+  DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] | { schema: keyof Database },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof Database
   }
@@ -192,9 +273,7 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+  DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] | { schema: keyof Database },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof Database
   }
@@ -215,9 +294,7 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+  DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"] | { schema: keyof Database },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof Database
   }
@@ -230,9 +307,7 @@ export type Enums<
     : never
 
 export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+  PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"] | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
   }

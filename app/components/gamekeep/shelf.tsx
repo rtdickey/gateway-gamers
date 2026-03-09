@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import Image from "next/image"
 
 import { useDebounce } from "use-debounce"
@@ -15,15 +15,10 @@ interface ShelfProps {
 }
 
 const Shelf: React.FC<ShelfProps> = ({ games }) => {
-  //const [filteredGames, setFilteredGames] = useState(games)
   const [searchValue, setSearchValue] = useState("")
   const [debouncedSearch] = useDebounce(searchValue.toLowerCase(), 500)
 
   const [filterShelf, setFilterShelf] = useState<string | null>(null)
-  //const [filterOwned, setFilterOwned] = useState(true)
-  //const [filterWant, setFilterWant] = useState(false)
-  //const [filterNotInterested, setFilterNotInterested] = useState(false)
-  const [filteredShelfCount, setFilteredShelfCount] = useState(1)
 
   const [filterPrivate, setFilterPrivate] = useState(false)
   const [filterLoaned, setFilterLoaned] = useState(false)

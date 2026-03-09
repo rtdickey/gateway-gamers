@@ -4,7 +4,7 @@ import Catalog from "../components/games/catalog"
 import { getGames } from "./actions"
 
 const Games = async () => {
-  const pageCount = 100
+  const pageCount = 24
   const { user } = await getUser()
   const { games } = await getGames({ page: 0, size: pageCount })
   return (
