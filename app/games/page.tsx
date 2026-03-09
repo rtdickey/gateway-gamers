@@ -16,5 +16,3 @@ const Games = async () => {
 }
 
 export default Games
-
-export default Games
