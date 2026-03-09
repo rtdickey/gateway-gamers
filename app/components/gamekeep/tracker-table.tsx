@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 
+import { returnGame } from "@/app/lib/actions/user-game-actions"
 import { LoanedGame } from "@/app/lib/types/loaned-game"
 import { useCallback, useRef, useState } from "react"
 
@@ -34,13 +35,10 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
     ref.current?.close()
   }, [ref, setSelectedLoanedGame])
 
-  const handleReturnGame = useCallback(() => {
-    console.log(
-      "Game Returned: ",
-      selectedLoanedGame?.user_game?.game?.title,
-      selectedLoanedGame?.borrower,
-      selectedLoanedGame?.id,
-    )
+  const handleReturnGame = useCallback(async () => {
+    if (selectedLoanedGame) {
+      await returnGame(selectedLoanedGame.id)
+    }
     handleCloseModal()
   }, [handleCloseModal, selectedLoanedGame])
 
@@ -84,7 +82,6 @@ const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
                 <div>{loanedGame.loaned_at.split("T")[0]}</div>
                 <div>({daysSinceLoan(loanedGame.loaned_at)} days)</div>
               </td>
-              <td></td>
               <td>
                 <button className='btn btn-link' onClick={() => handleShowModal(loanedGame)}>
                   Returned?

@@ -1,8 +1,12 @@
 import { login } from "./actions"
 import GatewayGamersLogo from "@/app/components/common/gateway-gamers-logo"
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ sent?: string }> }) {
-  const { sent } = await searchParams
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sent?: string; notInvited?: string }>
+}) {
+  const { sent, notInvited } = await searchParams
 
   return (
     <main className='min-h-screen flex items-center justify-center bg-base-200'>
@@ -15,6 +19,14 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
               <h1 className='text-2xl font-bold'>Check your email</h1>
               <p className='text-base-content/60 text-sm mt-2'>
                 We sent a magic link to your inbox. Click it to sign in.
+              </p>
+            </div>
+          ) : notInvited ? (
+            <div className='text-center'>
+              <h1 className='text-2xl font-bold'>Members Only</h1>
+              <p className='text-base-content/60 text-sm mt-2'>
+                Gateway Gamers is currently invite-only. If you think you should have access, reach out to a member of
+                the community.
               </p>
             </div>
           ) : (

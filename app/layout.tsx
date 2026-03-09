@@ -29,7 +29,9 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-100 text-base-content`}>
-        <Navbar isAdmin={isAdmin}>{children}</Navbar>
+        <Navbar isAdmin={isAdmin} isLoggedIn={!!user}>
+          {children}
+        </Navbar>
         <Footer />
       </body>
     </html>

@@ -75,7 +75,17 @@ export const getUserGames = async (userId: string) => {
 export const getLoanedGames = async (userId: string) => {
   const supabase = await createClient()
 
-  const { data, error } = await supabase
+  // Get the user's own user_game IDs so we can filter loans they created
+  const { data: userGameIds, error: userGameError } = await supabase
+    .from("user_games")
+    .select("id")
+    .eq("user_id", userId)
+
+  if (userGameError) throw userGameError
+
+  const ids = (userGameIds ?? []).map(ug => ug.id)
+
+  const query = supabase
     .from("loans")
     .select(
       `
@@ -112,11 +122,27 @@ export const getLoanedGames = async (userId: string) => {
       )
     `,
     )
-    .or(`user_game.user_id.eq.${userId},borrower_id.eq.${userId}`)
     .is("returned_at", null)
     .order("loaned_at", { ascending: true })
-    .returns<LoanedGame[]>()
 
+  const { data, error } =
+    ids.length > 0
+      ? await query.or(`user_game_id.in.(${ids.join(",")}),borrower_id.eq.${userId}`).returns<LoanedGame[]>()
+      : await query.eq("borrower_id", userId).returns<LoanedGame[]>()
+
+  if (error) throw error
+  return data
+}
+
+export const returnGame = async (loanId: string) => {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("loans")
+    .update({ returned_at: new Date().toISOString() })
+    .eq("id", loanId)
+
+  revalidatePath("/gamekeep/tracker")
   if (error) throw error
   return data
 }

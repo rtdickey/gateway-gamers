@@ -1,12 +1,14 @@
 import Link from "next/link"
 import GatewayGamersLogo from "./gateway-gamers-logo"
+import SignOutButton from "./sign-out-button"
 
 interface NavbarProps {
   children: React.ReactNode
   isAdmin?: boolean
+  isLoggedIn?: boolean
 }
 
-const Navbar: React.FC<NavbarProps> = ({ children, isAdmin }) => {
+const Navbar: React.FC<NavbarProps> = ({ children, isAdmin, isLoggedIn }) => {
   return (
     <div className='drawer'>
       <input id='my-drawer-3' type='checkbox' className='drawer-toggle' />
@@ -54,6 +56,29 @@ const Navbar: React.FC<NavbarProps> = ({ children, isAdmin }) => {
               )}
             </ul>
           </div>
+          {isLoggedIn && (
+            <div className='dropdown dropdown-end ml-2'>
+              <div tabIndex={0} role='button' className='btn btn-ghost btn-circle avatar placeholder'>
+                <div className='bg-neutral text-neutral-content rounded-full w-9'>
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' className='w-5 h-5'>
+                    <path
+                      fillRule='evenodd'
+                      d='M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className='menu menu-sm dropdown-content bg-base-200 rounded-box z-10 mt-3 w-40 p-2 shadow'
+              >
+                <li>
+                  <SignOutButton />
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
         {/* Page content here */}
         <div className='container mx-auto px-6 min-h-screen justify-between mt-4'>{children}</div>
@@ -83,6 +108,11 @@ const Navbar: React.FC<NavbarProps> = ({ children, isAdmin }) => {
           {isAdmin && (
             <li>
               <Link href='/admin/users'>Admin</Link>
+            </li>
+          )}
+          {isLoggedIn && (
+            <li>
+              <SignOutButton />
             </li>
           )}
         </ul>

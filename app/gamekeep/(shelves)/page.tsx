@@ -1,7 +1,6 @@
 import getUser from "@/app/actions"
 import Shelf from "@/app/components/gamekeep/shelf"
 import { getUserGames } from "@/app/lib/actions/user-game-actions"
-import SignOutButton from "@/app/components/common/sign-out-button"
 
 const Page = async () => {
   const { user } = await getUser()
@@ -9,7 +8,6 @@ const Page = async () => {
 
   return (
     <>
-      <SignOutButton />
       <Shelf games={games} />
     </>
   )
