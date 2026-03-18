@@ -135,6 +135,20 @@ export const deleteGameFromShelf = async (gameId: string) => {
   return data
 }
 
+export const toggleGamePrivacy = async (userGameId: number, isPrivate: boolean) => {
+  const supabase = await createClient()
+  const { user } = await getUser()
+
+  const { error } = await supabase
+    .from("user_games")
+    .update({ is_private: isPrivate })
+    .eq("id", userGameId)
+    .eq("user_id", user.id) // ownership enforced server-side
+
+  if (error) throw error
+  revalidatePath("/gamekeep")
+}
+
 export const getUserGames = async (userId: string) => {
   const supabase = await createClient()
   const userGamesQuery = supabase

@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * On true pointer devices (mouse/trackpad) hide card actions until hover.
+ * On touch devices keep them always visible.
+ */
+.hover-reveal {
+  opacity: 1;
+  transition: opacity 150ms;
+}
+
+@media (hover: hover) {
+  .hover-reveal {
+    opacity: 0;
+  }
+  .group:hover .hover-reveal {
+    opacity: 1;
+  }
+}
+
 /* :root {
   --background: #fcfbf7;
   --foreground: #171717;
