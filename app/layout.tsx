@@ -28,6 +28,20 @@ export default async function RootLayout({
 
   return (
     <html lang='en'>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+  try {
+    var stored = localStorage.getItem('gg-theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var theme = stored ? stored : (prefersDark ? 'gg-dark' : 'gg-light');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch(e) {}
+})();`,
+          }}
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base-100 text-base-content`}>
         <Navbar isAdmin={isAdmin} isLoggedIn={!!user}>
           {children}

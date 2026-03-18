@@ -1,6 +1,7 @@
 import Link from "next/link"
 import GatewayGamersLogo from "./gateway-gamers-logo"
 import SignOutButton from "./sign-out-button"
+import ThemeToggle from "./theme-toggle"
 
 interface NavbarProps {
   children: React.ReactNode
@@ -28,17 +29,15 @@ const Navbar: React.FC<NavbarProps> = ({ children, isAdmin, isLoggedIn }) => {
             </label>
           </div>
           <div className='mx-2 flex-1 px-2'>
-            <Link href='/'>
-              <GatewayGamersLogo className='w-14' />
+            <Link href='/' className='flex items-center gap-2.5'>
+              <GatewayGamersLogo className='w-10' />
+              <span className='font-bold text-lg tracking-tight hidden sm:inline'>Gateway Gamers</span>
             </Link>
           </div>
           <div className='hidden flex-none lg:block'>
             <ul className='menu menu-horizontal'>
               <li>
                 <Link href='/gamekeep'>Game Keep</Link>
-              </li>
-              <li>
-                <Link href='/games'>Browse Games</Link>
               </li>
               <li>
                 <Link href='/gamekeep/tracker'>Tracker</Link>
@@ -56,6 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ children, isAdmin, isLoggedIn }) => {
               )}
             </ul>
           </div>
+          <ThemeToggle />
           {isLoggedIn && (
             <div className='dropdown dropdown-end ml-2'>
               <div tabIndex={0} role='button' className='btn btn-ghost btn-circle avatar placeholder'>
@@ -81,20 +81,17 @@ const Navbar: React.FC<NavbarProps> = ({ children, isAdmin, isLoggedIn }) => {
           )}
         </div>
         {/* Page content here */}
-        <div className='container mx-auto px-6 min-h-screen justify-between mt-4'>{children}</div>
+        <div className='container mx-auto px-3 sm:px-6 min-h-screen mt-4'>{children}</div>
       </div>
       <div className='drawer-side'>
         <label htmlFor='my-drawer-3' aria-label='close sidebar' className='drawer-overlay'></label>
-        <ul className='menu bg-base-200 min-h-full w-80 p-4'>
+        <ul className='menu bg-base-200 min-h-full w-72 max-w-[85vw] p-4'>
           {/* Sidebar content here */}
           <Link href='/'>
             <GatewayGamersLogo className='w-20 justify-self-center mb-4' />
           </Link>
           <li>
             <Link href='/gamekeep'>Game Keep</Link>
-          </li>
-          <li>
-            <Link href='/games'>Browse Games</Link>
           </li>
           <li>
             <Link href='/gamekeep/tracker'>Tracker</Link>
