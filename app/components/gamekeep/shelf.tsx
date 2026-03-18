@@ -9,6 +9,7 @@ import { UserGame } from "@/app/lib/types/user-game"
 import Search from "@/app/components/common/search"
 import { deleteGameFromShelf } from "@/app/lib/actions/user-game-actions"
 import ShelfTab from "./shelf-tab"
+import BggGameSearch from "./bgg-game-search"
 
 interface ShelfProps {
   games: UserGame[]
@@ -67,6 +68,7 @@ const Shelf: React.FC<ShelfProps> = ({ games }) => {
           />
         </div>
         <div className='flex justify-start md:justify-end gap-4'>
+          <BggGameSearch />
           <label className='swap'>
             <input type='checkbox' checked={filterPrivate} onChange={e => setFilterPrivate(!filterPrivate)} />
             <div className='swap-on'>

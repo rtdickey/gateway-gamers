@@ -5,6 +5,105 @@ import { UserGame } from "../types/user-game"
 import { LoanedGame } from "../types/loaned-game"
 import getUser from "../../actions"
 import { revalidatePath } from "next/cache"
+import { searchBggGames, getBggGameDetails } from "@/app/lib/bgg/api"
+import type { BggSearchResult, BggGameDetail } from "@/app/lib/types/bgg"
+
+export async function searchBggGamesAction(query: string): Promise<BggSearchResult[]> {
+  return searchBggGames(query)
+}
+
+export async function getBggGameDetailsAction(bggId: number): Promise<BggGameDetail> {
+  return getBggGameDetails(bggId)
+}
+
+/** Used when details have already been fetched client-side to avoid a second BGG request. */
+export async function addBggGameDetailsToShelf(details: BggGameDetail, shelf: string): Promise<void> {
+  const supabase = await createClient()
+  const { user } = await getUser()
+
+  const { data: existing } = await supabase.from("games").select("id").eq("bgg_id", details.bggId).maybeSingle()
+
+  let gameId: string
+
+  if (existing) {
+    gameId = existing.id
+  } else {
+    const { data: inserted, error: insertError } = await supabase
+      .from("games")
+      .insert({
+        bgg_id: details.bggId,
+        title: details.title,
+        thumbnail: details.thumbnail,
+        image: details.image,
+        year_published: details.yearPublished,
+        playing_time: details.playingTime,
+        min_players: details.minPlayers,
+        max_players: details.maxPlayers,
+        age: details.age,
+        publisher: details.publisher,
+        is_expansion: details.isExpansion,
+      })
+      .select("id")
+      .single()
+
+    if (insertError) throw insertError
+    gameId = inserted.id
+  }
+
+  const { error } = await supabase.from("user_games").insert({
+    user_id: user.id,
+    game_id: gameId,
+    shelf,
+  })
+
+  if (error) throw error
+  revalidatePath("/gamekeep")
+}
+
+export async function addBggGameToShelf(bggId: number, shelf: string): Promise<void> {
+  const supabase = await createClient()
+  const { user } = await getUser()
+
+  // Check whether this BGG game is already in the games table
+  const { data: existing } = await supabase.from("games").select("id").eq("bgg_id", bggId).maybeSingle()
+
+  let gameId: string
+
+  if (existing) {
+    gameId = existing.id
+  } else {
+    const details = await getBggGameDetails(bggId)
+    const { data: inserted, error: insertError } = await supabase
+      .from("games")
+      .insert({
+        bgg_id: details.bggId,
+        title: details.title,
+        thumbnail: details.thumbnail,
+        image: details.image,
+        year_published: details.yearPublished,
+        playing_time: details.playingTime,
+        min_players: details.minPlayers,
+        max_players: details.maxPlayers,
+        age: details.age,
+        publisher: details.publisher,
+        is_expansion: details.isExpansion,
+      })
+      .select("id")
+      .single()
+
+    if (insertError) throw insertError
+    gameId = inserted.id
+  }
+
+  const { error } = await supabase.from("user_games").insert({
+    user_id: user.id,
+    game_id: gameId,
+    shelf,
+  })
+
+  if (error) throw error
+  revalidatePath("/gamekeep")
+}
 
 export const addGameToShelf = async (gameId: string, shelf: string) => {
   const supabase = await createClient()
