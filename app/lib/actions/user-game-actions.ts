@@ -5,7 +5,7 @@ import { UserGame } from "../types/user-game"
 import { LoanedGame } from "../types/loaned-game"
 import getUser from "../../actions"
 import { revalidatePath } from "next/cache"
-import { searchBggGames, getBggGameDetails } from "@/app/lib/bgg/api"
+import { searchBggGames, getBggGameDetails, searchBggGamesPage } from "@/app/lib/bgg/api"
 import type { BggSearchResult, BggGameDetail } from "@/app/lib/types/bgg"
 
 export async function searchBggGamesAction(query: string): Promise<BggSearchResult[]> {
@@ -14,6 +14,14 @@ export async function searchBggGamesAction(query: string): Promise<BggSearchResu
 
 export async function getBggGameDetailsAction(bggId: number): Promise<BggGameDetail> {
   return getBggGameDetails(bggId)
+}
+
+/** Paginated two-step search returning one page of full details + pagination metadata. */
+export async function searchBggGamesPageAction(
+  query: string,
+  page: number,
+): Promise<{ items: BggGameDetail[]; totalCount: number; totalPages: number }> {
+  return searchBggGamesPage(query, page)
 }
 
 /** Used when details have already been fetched client-side to avoid a second BGG request. */
