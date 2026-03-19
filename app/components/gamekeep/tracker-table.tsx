@@ -4,6 +4,7 @@ import Image from "next/image"
 
 import { returnGame } from "@/app/lib/actions/user-game-actions"
 import { LoanedGame } from "@/app/lib/types/loaned-game"
+import { daysSinceLoan } from "@/app/lib/utils/date"
 import { useCallback, useRef, useState } from "react"
 
 interface TrackerTableProps {
@@ -11,14 +12,6 @@ interface TrackerTableProps {
 }
 
 const TrackerTable: React.FC<TrackerTableProps> = ({ loanedGames }) => {
-  const daysSinceLoan = (loanedDate: string) => {
-    const date = new Date(loanedDate)
-    const now = new Date()
-    const timeDifference = now.getTime() - date.getTime()
-    const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
-    return daysDifference
-  }
-
   const [selectedLoanedGame, setSelectedLoanedGame] = useState<LoanedGame | null>(null)
   const ref = useRef<HTMLDialogElement>(null)
 
