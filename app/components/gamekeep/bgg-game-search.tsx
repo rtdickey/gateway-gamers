@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import type { BggSearchResult, BggGameDetail } from "@/app/lib/types/bgg"
+import type { BggGameDetail } from "@/app/lib/types/bgg"
 import {
-  searchBggGamesAction,
+  searchBggGamesPageAction,
   getBggGameDetailsAction,
   addBggGameDetailsToShelf,
 } from "@/app/lib/actions/user-game-actions"
@@ -14,20 +14,42 @@ const MODAL_ID = "bggSearchModal"
 
 type Tab = "search" | "id"
 
+function getPageNumbers(current: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i)
+  const near = new Set([0, total - 1, current - 1, current, current + 1].filter(p => p >= 0 && p < total))
+  const sorted = Array.from(near).sort((a, b) => a - b)
+  const result: (number | "...")[] = []
+  let prev: number | null = null
+  for (const p of sorted) {
+    if (prev !== null && p - prev > 1) result.push("...")
+    result.push(p)
+    prev = p
+  }
+  return result
+}
+
 const BggGameSearch: React.FC = () => {
   const [tab, setTab] = useState<Tab>("search")
 
   // Search tab state
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<BggSearchResult[]>([])
+  const [results, setResults] = useState<BggGameDetail[]>([])
   const [searching, setSearching] = useState(false)
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
 
   // ID tab state
   const [bggIdInput, setBggIdInput] = useState("")
   const [lookingUp, setLookingUp] = useState(false)
 
   // Shared state
-  const [selected, setSelected] = useState<BggSearchResult | null>(null)
+  const [selected, setSelected] = useState<{
+    bggId: number
+    name: string
+    yearPublished: number | null
+    type: "boardgame" | "boardgameexpansion"
+  } | null>(null)
   const [details, setDetails] = useState<BggGameDetail | null>(null)
   const [loadingDetails, setLoadingDetails] = useState(false)
   const [shelf, setShelf] = useState<string>("Owned")
@@ -45,6 +67,9 @@ const BggGameSearch: React.FC = () => {
     setTab("search")
     setQuery("")
     setResults([])
+    setPage(0)
+    setTotalPages(0)
+    setTotalCount(0)
     setBggIdInput("")
     setSelected(null)
     setDetails(null)
@@ -57,7 +82,23 @@ const BggGameSearch: React.FC = () => {
     setSelected(null)
     setDetails(null)
     setResults([])
+    setPage(0)
+    setTotalPages(0)
+    setTotalCount(0)
     setError(null)
+  }
+
+  const fetchPage = (q: string, p: number) => {
+    setSearching(true)
+    searchBggGamesPageAction(q, p)
+      .then(({ items, totalCount: tc, totalPages: tp }) => {
+        setResults(items)
+        setTotalCount(tc)
+        setTotalPages(tp)
+        setPage(p)
+      })
+      .catch(() => setResults([]))
+      .finally(() => setSearching(false))
   }
 
   const handleSearch = () => {
@@ -65,14 +106,20 @@ const BggGameSearch: React.FC = () => {
     setResults([])
     setSelected(null)
     setDetails(null)
-    setSearching(true)
-    searchBggGamesAction(query.trim())
-      .then(setResults)
-      .catch(() => setResults([]))
-      .finally(() => setSearching(false))
+    setPage(0)
+    setTotalPages(0)
+    setTotalCount(0)
+    fetchPage(query.trim(), 0)
   }
 
-  const loadDetails = (bggId: number, partial?: Partial<BggSearchResult>) => {
+  const handlePageChange = (p: number) => {
+    if (p < 0 || p >= totalPages || searching) return
+    setSelected(null)
+    setDetails(null)
+    fetchPage(query, p)
+  }
+
+  const loadDetails = (bggId: number) => {
     setDetails(null)
     setLoadingDetails(true)
     getBggGameDetailsAction(bggId)
@@ -83,7 +130,6 @@ const BggGameSearch: React.FC = () => {
           name: d.title,
           yearPublished: d.yearPublished || null,
           type: d.isExpansion ? "boardgameexpansion" : "boardgame",
-          ...partial,
         })
       })
       .catch(() => {
@@ -93,9 +139,14 @@ const BggGameSearch: React.FC = () => {
       .finally(() => setLoadingDetails(false))
   }
 
-  const handleSelect = (result: BggSearchResult) => {
-    setSelected(result)
-    loadDetails(result.bggId)
+  const handleSelect = (result: BggGameDetail) => {
+    setSelected({
+      bggId: result.bggId,
+      name: result.title,
+      yearPublished: result.yearPublished || null,
+      type: result.isExpansion ? "boardgameexpansion" : "boardgame",
+    })
+    setDetails(result)
   }
 
   const handleIdLookup = () => {
@@ -185,21 +236,72 @@ const BggGameSearch: React.FC = () => {
           )}
 
           {!selected && results.length > 0 && (
-            <ul className='mt-3 border border-base-300 rounded-box max-h-64 overflow-y-auto'>
-              {results.map(r => (
-                <li
-                  key={r.bggId}
-                  className='px-3 py-2 hover:bg-base-200 cursor-pointer flex justify-between items-center gap-2'
-                  onClick={() => handleSelect(r)}
-                >
-                  <span className='truncate'>{r.name}</span>
-                  <span className='text-sm opacity-50 shrink-0'>
-                    {r.yearPublished ?? "?"}
-                    {r.type === "boardgameexpansion" ? " · Expansion" : ""}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className='mt-3 border border-base-300 rounded-box max-h-96 overflow-y-auto'>
+                {results.map(r => (
+                  <li
+                    key={r.bggId}
+                    className='px-3 py-2 hover:bg-base-200 cursor-pointer flex items-center gap-3'
+                    onClick={() => handleSelect(r)}
+                  >
+                    {r.thumbnail ? (
+                      <Image
+                        src={r.thumbnail}
+                        alt={r.title}
+                        width={40}
+                        height={48}
+                        className='rounded object-contain shrink-0 h-12 w-10'
+                      />
+                    ) : (
+                      <div className='w-10 h-12 bg-base-300 rounded shrink-0' />
+                    )}
+                    <span className='flex-1 truncate'>{r.title}</span>
+                    <span className='text-sm opacity-50 shrink-0'>
+                      {r.yearPublished || "?"}
+                      {r.isExpansion ? " · Expansion" : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              {totalPages > 1 && (
+                <div className='flex items-center justify-center gap-1 mt-2 flex-wrap'>
+                  <button
+                    className='btn btn-xs btn-ghost'
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 0 || searching}
+                  >
+                    «
+                  </button>
+                  {getPageNumbers(page, totalPages).map((p, i) =>
+                    p === "..." ? (
+                      <span key={`ellipsis-${i}`} className='px-1 opacity-50 text-sm select-none'>
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        className={`btn btn-xs ${page === p ? "btn-primary" : "btn-ghost"}`}
+                        onClick={() => handlePageChange(p as number)}
+                        disabled={searching}
+                      >
+                        {(p as number) + 1}
+                      </button>
+                    ),
+                  )}
+                  <button
+                    className='btn btn-xs btn-ghost'
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages - 1 || searching}
+                  >
+                    »
+                  </button>
+                </div>
+              )}
+              <p className='text-xs opacity-40 text-center mt-1'>
+                {totalCount} result{totalCount !== 1 ? "s" : ""} · page {page + 1} of {totalPages}
+              </p>
+            </>
           )}
 
           {selected && (
