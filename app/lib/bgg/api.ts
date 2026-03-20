@@ -117,26 +117,16 @@ export async function getBggGameDetails(bggId: number): Promise<BggGameDetail> {
 const PAGE_SIZE = 20
 
 /**
- * Step 1 cache: stores the raw /search ID list for a query (1 hour).
- * Keeping this separate means page turns reuse the cached ID list without
- * hitting BGG's /search endpoint again.
- */
-const _searchBggGameIdsCached = unstable_cache(
-  (normalizedQuery: string) => searchBggGames(normalizedQuery),
-  ["bgg-search-ids"],
-  { revalidate: 3600 },
-)
-
-/**
- * Step 2 cache: stores the full /thing details for one page of results.
+ * Cached search: stores the full /thing details for one page of results.
  * Cached per (query, page) for 1 hour so revisiting a page costs zero BGG calls.
+ * Note: unstable_cache cannot be nested, so searchBggGames is called directly here.
  */
 const _searchBggGamesPageCached = unstable_cache(
   async (
     normalizedQuery: string,
     page: number,
   ): Promise<{ items: BggGameDetail[]; totalCount: number; totalPages: number }> => {
-    const allResults = await _searchBggGameIdsCached(normalizedQuery)
+    const allResults = await searchBggGames(normalizedQuery)
     const totalCount = allResults.length
     const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
     const pageResults = allResults.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
